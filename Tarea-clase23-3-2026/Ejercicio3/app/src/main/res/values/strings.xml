@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Ejercicio3</string>
+    <string name="Titulo1">Text composable</string>
+    <string name="Titulo2">Image composable</string>
+    <string name="Titulo3">Row composable</string>
+    <string name="Titulo4">Column composable</string>
+    <string name="Descripcion1">Displays text and follows the recommended Material Design guidelines.</string>
+    <string name="Descripcion2">Creates a composable that lays out and draws a given Painter class object.</string>
+    <string name="Descripcion3">A layout composable that places its children in a horizontal sequence.</string>
+    <string name="Descripcion4">A layout composable that places its children in a vertical sequence.</string>
+</resources>
