@@ -44,7 +44,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun TareasApp(modifier: Modifier = Modifier) {
   Box(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxSize()
       .background(Color.White)
       .padding(16.dp),

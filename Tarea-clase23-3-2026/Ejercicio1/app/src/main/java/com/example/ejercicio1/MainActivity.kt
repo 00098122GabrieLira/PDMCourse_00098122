@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun JetpackApp(modifier: Modifier = Modifier) {
   Column(
-    modifier = Modifier
+    modifier = modifier
       .fillMaxSize()
       .background(Color.White)
   ) {

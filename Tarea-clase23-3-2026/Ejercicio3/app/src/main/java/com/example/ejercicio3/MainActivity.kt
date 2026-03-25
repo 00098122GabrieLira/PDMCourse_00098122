@@ -43,7 +43,7 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun CuadrantesApp(modifier: Modifier = Modifier) {
-  Column(modifier = Modifier
+  Column(modifier = modifier
     .fillMaxSize()) {
     Row(
       modifier = Modifier
