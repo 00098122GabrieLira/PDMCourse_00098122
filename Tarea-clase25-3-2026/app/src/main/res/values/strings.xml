@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Limonada</string>
+    <string name="texto_img_1">Toca el árbol para conseguir limones</string>
+    <string name="texto_img_2">Toca el limón para exprimirlo</string>
+    <string name="texto_img_3">Toca la limonada para beberla</string>
+    <string name="texto_img_4">Toca el vaso vacío para empezar de nuevo</string>
+</resources>
