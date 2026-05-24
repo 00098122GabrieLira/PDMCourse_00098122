@@ -2,7 +2,7 @@ package com.gala00098122.peliculas.dummy
 
 import com.gala00098122.peliculas.model.Movie
 
-val dummyMovies = listOf(
+/*val dummyMovies = listOf(
   Movie(
     id = 1226863,
     title = "Super Mario Galaxy la película",
@@ -323,4 +323,4 @@ val dummyMovies = listOf(
     backdropUrl = "https://image.tmdb.org/t/p/w500/1RgPyOhN4DRs225BGTlHJqCudII.jpg",
     posterUrl = "https://image.tmdb.org/t/p/w500/iWLV12z9oexSRLz2WKyqCZbKoPA.jpg"
   ),
-)
+)*/

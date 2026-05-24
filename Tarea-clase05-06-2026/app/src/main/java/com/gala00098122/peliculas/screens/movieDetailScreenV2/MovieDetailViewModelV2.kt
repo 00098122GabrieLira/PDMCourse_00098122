@@ -2,14 +2,18 @@ package com.gala00098122.peliculas.screens.movieDetailScreenV2
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gala00098122.peliculas.data.repositories.movieRepository.MovieApiRepository
+import com.gala00098122.peliculas.data.repositories.movieRepository.MovieRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.gala00098122.peliculas.dummy.dummyMovies
 import com.gala00098122.peliculas.model.Movie
+import kotlinx.coroutines.delay
 
 class MovieDetailViewModelV2 : ViewModel() {
+  
+  private val movieRepository: MovieRepository = MovieApiRepository()
   
   private val _movie = MutableStateFlow<Movie?>(null)
   val movie: StateFlow<Movie?> = _movie.asStateFlow()
@@ -25,10 +29,9 @@ class MovieDetailViewModelV2 : ViewModel() {
       _isLoading.value = true
       _error.value = null
       
-      // Simular delay de carga
-      kotlinx.coroutines.delay(500)
+      delay(500)
       
-      val foundMovie = dummyMovies.find { it.id == movieId }
+      val foundMovie = movieRepository.getMovieById(movieId)
       if (foundMovie != null) {
         _movie.value = foundMovie
       } else {

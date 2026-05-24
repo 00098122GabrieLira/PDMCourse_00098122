@@ -19,6 +19,7 @@ import androidx.compose.material3.TopAppBarDefaults.topAppBarColors
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -27,6 +28,7 @@ fun AppScaffold(
   modifier: Modifier = Modifier,
   title: String = "",
   navigationIcon: @Composable (() -> Unit)? = null,
+  actions: @Composable (() -> Unit)? = null,
   bottomBarText: String? = null,
   onFabClick: (() -> Unit)? = null,
   fabIcon: @Composable (() -> Unit)? = null,
@@ -42,9 +44,12 @@ fun AppScaffold(
           colors = topAppBarColors(
             containerColor = MaterialTheme.colorScheme.primaryContainer,
             titleContentColor = MaterialTheme.colorScheme.primary,
+            navigationIconContentColor = Color.White,
+            actionIconContentColor = Color.White,
           ),
-          title = { Text(title) },
-          navigationIcon = { navigationIcon?.invoke() }
+          title = { Text(text= title, color = Color.White) },
+          navigationIcon = { navigationIcon?.invoke() },
+          actions = { actions?.invoke() }
         )
       }
     },

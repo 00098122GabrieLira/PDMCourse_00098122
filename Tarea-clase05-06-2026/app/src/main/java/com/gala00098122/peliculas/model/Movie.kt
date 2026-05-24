@@ -12,6 +12,7 @@ data class Movie(
   val popularity: Double,
   val voteAverage: Double,
   val voteCount: Int,
+  val softcore: Boolean,
   val video: Boolean,
   val backdropUrl: String,
   val posterUrl: String

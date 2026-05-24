@@ -8,9 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.gala00098122.peliculas.screens.MovieList.MovieListScreen
+import com.gala00098122.peliculas.screens.movieList.MovieListScreen
 import com.gala00098122.peliculas.screens.movieDetailScreen.MovieDetailScreen
 import com.gala00098122.peliculas.screens.movieDetailScreenV2.MovieDetailScreenV2
+import com.gala00098122.peliculas.screens.upComingScreen.UpComingScreen
 import com.gala00098122.peliculas.screens.versions.VersionScreen
 
 @Composable
@@ -25,7 +26,8 @@ fun MovieApp() {
         MovieListScreen(
           navigateToVersions = { movieId ->
             backStack.add(Routes.Versions(movieId))
-          }
+          },
+          navigateToUpComing = { backStack.add(Routes.Soon) }
         )
       }
       entry<Routes.Versions> { key ->
@@ -55,6 +57,16 @@ fun MovieApp() {
           movieId = key.movieId,
           navigateBack = {
             backStack.removeLastOrNull()
+          }
+        )
+      }
+      entry<Routes.Soon> {
+        UpComingScreen(
+          navigateBack = {
+            backStack.removeLastOrNull()
+          },
+          navigateToVersions = { movieId ->
+            backStack.add(Routes.Versions(movieId))
           }
         )
       }
