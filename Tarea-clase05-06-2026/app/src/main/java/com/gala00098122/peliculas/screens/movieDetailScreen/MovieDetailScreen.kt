@@ -1,5 +1,7 @@
 package com.gala00098122.peliculas.screens.movieDetailScreen
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -7,11 +9,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -23,8 +28,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
@@ -69,22 +76,38 @@ fun MovieDetailScreen(
       }
       
       error != null -> {
-        Box(
+        Column(
           modifier = Modifier
             .fillMaxSize()
-            .padding(padding),
-          contentAlignment = Alignment.Center
+            .padding(padding)
+            .padding(16.dp)
+            .background(Color.Black),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(
+            12.dp,
+            alignment = Alignment.CenterVertically
+          )
         ) {
-          Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-              text = "Error: $error",
-              color = MaterialTheme.colorScheme.error,
-              style = MaterialTheme.typography.bodyLarge
+          Icon(
+            imageVector = Icons.Default.ErrorOutline,
+            contentDescription = "Error",
+            tint = Color.White,
+            modifier = Modifier.size(72.dp)
+          )
+          Text(
+            text = "$error",
+            textAlign = TextAlign.Center,
+          )
+          Button(
+            onClick = { viewModel.loadMovie(movieId) },
+            colors = ButtonDefaults.buttonColors(
+              containerColor = Color(0xFFFFFFFF),
+              contentColor = Color.Black
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { viewModel.loadMovie(movieId) }) {
-              Text("Reintentar")
-            }
+          ) {
+            Text(
+              text = "Reintentar"
+            )
           }
         }
       }

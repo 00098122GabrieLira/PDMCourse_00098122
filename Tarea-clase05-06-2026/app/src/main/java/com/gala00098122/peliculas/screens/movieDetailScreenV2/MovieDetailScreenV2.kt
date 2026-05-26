@@ -26,7 +26,9 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.border
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -126,22 +128,38 @@ fun MovieDetailScreenV2(
       }
       
       error != null -> {
-        Box(
+        Column(
           modifier = Modifier
             .fillMaxSize()
-            .padding(padding),
-          contentAlignment = Alignment.Center
+            .padding(padding)
+            .padding(16.dp)
+            .background(Color.Black),
+          horizontalAlignment = Alignment.CenterHorizontally,
+          verticalArrangement = Arrangement.spacedBy(
+            12.dp,
+            alignment = Alignment.CenterVertically
+          )
         ) {
-          Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(
-              text = "Error: $error",
-              color = MaterialTheme.colorScheme.error,
-              style = MaterialTheme.typography.bodyLarge
+          Icon(
+            imageVector = Icons.Default.ErrorOutline,
+            contentDescription = "Error",
+            tint = Color.White,
+            modifier = Modifier.size(72.dp)
+          )
+          Text(
+            text = "$error",
+            textAlign = TextAlign.Center,
+          )
+          Button(
+            onClick = { viewModel.loadMovie(movieId) },
+            colors = ButtonDefaults.buttonColors(
+              containerColor = Color(0xFFFFFFFF),
+              contentColor = Color.Black
             )
-            Spacer(modifier = Modifier.height(16.dp))
-            Button(onClick = { viewModel.loadMovie(movieId) }) {
-              Text("Reintentar")
-            }
+          ) {
+            Text(
+              text = "Reintentar"
+            )
           }
         }
       }

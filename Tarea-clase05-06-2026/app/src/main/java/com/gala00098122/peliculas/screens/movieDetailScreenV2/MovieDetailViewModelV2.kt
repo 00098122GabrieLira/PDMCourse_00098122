@@ -29,14 +29,13 @@ class MovieDetailViewModelV2 : ViewModel() {
       _isLoading.value = true
       _error.value = null
       
-      delay(500)
-      
-      val foundMovie = movieRepository.getMovieById(movieId)
-      if (foundMovie != null) {
-        _movie.value = foundMovie
-      } else {
-        _error.value = "Película no encontrada"
-      }
+      movieRepository.getMovieById(movieId)
+        .onSuccess { movie ->
+          _movie.value = movie
+        }
+        .onFailure { error ->
+          _error.value = "Pelicula no encontrada"
+        }
       
       _isLoading.value = false
     }

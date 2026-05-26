@@ -11,29 +11,49 @@ import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 
 class MovieApiRepository : MovieRepository {
-  override suspend fun getMovies(): List<Movie> {
-    val response: GetMoviesResponseDto = KtorClient.client.get("movie/popular") {
-      parameter("language", "es-ES")
-      parameter("page", 1)
-    }.body()
-    
-    return response.results.map { movieDto -> movieDto.toModel() }
+  override suspend fun getMovies(): Result<List<Movie>> {
+    try {
+      
+      val response: GetMoviesResponseDto = KtorClient.client.get("movie/popular") {
+        parameter("language", "es-ES")
+        parameter("page", 1)
+      }.body()
+      
+      return Result.success(response.results.map { movieDto -> movieDto.toModel() })
+      
+    } catch (e: Exception) {
+      return Result.failure(e)
+    }
   }
   
-  override suspend fun getMovieById(id: Int): Movie {
-    val response: MovieDto = KtorClient.client.get("movie/$id") {
-      parameter("language", "es-ES")
-    }.body()
+  override suspend fun getMovieById(id: Int): Result<Movie> {
     
-    return response.toModel()
+    try {
+      
+      val response: MovieDto = KtorClient.client.get("movie/$id") {
+        parameter("language", "es-ES")
+      }.body()
+      
+      return Result.success(response.toModel())
+      
+    } catch (e: Exception) {
+      return Result.failure(e)
+    }
+    
   }
   
-  override suspend fun getUpcomingMovies(): List<Movie> {
-    val response: GetUpcomingMoviesResponseDto = KtorClient.client.get("movie/upcoming") {
-      parameter("language", "es-ES")
-      parameter("page", 1)
-    }.body()
-    
-    return response.results.map { movieDTO -> movieDTO.toModel() }
+  override suspend fun getUpcomingMovies(): Result<List<Movie>> {
+    try {
+      
+      val response: GetUpcomingMoviesResponseDto = KtorClient.client.get("movie/upcoming") {
+        parameter("language", "es-ES")
+        parameter("page", 1)
+      }.body()
+      
+      return Result.success(response.results.map { movieDTO -> movieDTO.toModel() })
+      
+    } catch (e: Exception) {
+      return Result.failure(e)
+    }
   }
 }
