@@ -25,6 +25,10 @@ class MovieListViewModel : ViewModel() {
   private val _error = MutableStateFlow<String?>(null)
   val error = _error.asStateFlow()
   
+  init {
+    loadMovies()
+  }
+  
   fun loadMovies() {
     viewModelScope.launch {
       _error.value = null

@@ -1,6 +1,5 @@
 package com.gala00098122.peliculas.screens.movieDetailScreen
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,7 +27,6 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -80,8 +78,7 @@ fun MovieDetailScreen(
           modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .padding(16.dp)
-            .background(Color.Black),
+            .padding(16.dp),
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.spacedBy(
             12.dp,
@@ -91,7 +88,7 @@ fun MovieDetailScreen(
           Icon(
             imageVector = Icons.Default.ErrorOutline,
             contentDescription = "Error",
-            tint = Color.White,
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(72.dp)
           )
           Text(
@@ -101,8 +98,8 @@ fun MovieDetailScreen(
           Button(
             onClick = { viewModel.loadMovie(movieId) },
             colors = ButtonDefaults.buttonColors(
-              containerColor = Color(0xFFFFFFFF),
-              contentColor = Color.Black
+              containerColor = MaterialTheme.colorScheme.primary,
+              contentColor = MaterialTheme.colorScheme.onPrimary
             )
           ) {
             Text(

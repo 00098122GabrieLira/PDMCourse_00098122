@@ -18,10 +18,10 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -44,8 +44,6 @@ fun UpComingScreen(
   val error by viewModel.error.collectAsState()
   val refresh by viewModel.refresh.collectAsState()
   
-  LaunchedEffect(Unit) { viewModel.loadMovies() }
-  
   if (loading) {
     AppScaffold(title = "Cargando...") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
@@ -59,8 +57,7 @@ fun UpComingScreen(
         modifier = Modifier
           .fillMaxSize()
           .padding(padding)
-          .padding(16.dp)
-          .background(Color.Black),
+          .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
           12.dp,
@@ -70,7 +67,7 @@ fun UpComingScreen(
         Icon(
           imageVector = Icons.Default.ErrorOutline,
           contentDescription = "Error",
-          tint = Color.White,
+          tint = MaterialTheme.colorScheme.primary,
           modifier = Modifier.size(72.dp)
         )
         Text(
@@ -80,8 +77,8 @@ fun UpComingScreen(
         Button(
           onClick = { viewModel.loadMovies() },
           colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFFFFFF),
-            contentColor = Color.Black
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
           )
         ) {
           Text(

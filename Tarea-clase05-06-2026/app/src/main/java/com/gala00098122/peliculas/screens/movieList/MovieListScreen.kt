@@ -12,15 +12,14 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -45,10 +44,6 @@ fun MovieListScreen(
   val error by viewModel.error.collectAsState()
   val refresh by viewModel.refresh.collectAsState()
   
-  LaunchedEffect(Unit) {
-    viewModel.loadMovies()
-  }
-  
   if (loading) {
     AppScaffold(title = "Movies") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
@@ -62,8 +57,7 @@ fun MovieListScreen(
         modifier = Modifier
           .fillMaxSize()
           .padding(padding)
-          .padding(16.dp)
-          .background(Color.Black),
+          .padding(16.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(
           12.dp,
@@ -73,7 +67,7 @@ fun MovieListScreen(
         Icon(
           imageVector = Icons.Default.ErrorOutline,
           contentDescription = "Error",
-          tint = Color.White,
+          tint = MaterialTheme.colorScheme.primary,
           modifier = Modifier.size(72.dp)
         )
         Text(
@@ -83,8 +77,8 @@ fun MovieListScreen(
         Button(
           onClick = { viewModel.loadMovies() },
           colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFFFFFFF),
-            contentColor = Color.Black
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
           )
         ) {
           Text(
@@ -102,8 +96,8 @@ fun MovieListScreen(
       Button(
         onClick = { navigateToUpComing() },
         colors = ButtonDefaults.buttonColors(
-          containerColor = Color(0xFF3A3737),
-          contentColor = Color.White
+          containerColor = MaterialTheme.colorScheme.primary,
+          contentColor = MaterialTheme.colorScheme.onPrimary
         )
       ) {
         Text(text = "Proximamente")

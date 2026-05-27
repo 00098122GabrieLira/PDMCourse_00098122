@@ -132,8 +132,7 @@ fun MovieDetailScreenV2(
           modifier = Modifier
             .fillMaxSize()
             .padding(padding)
-            .padding(16.dp)
-            .background(Color.Black),
+            .padding(16.dp),
           horizontalAlignment = Alignment.CenterHorizontally,
           verticalArrangement = Arrangement.spacedBy(
             12.dp,
@@ -143,7 +142,7 @@ fun MovieDetailScreenV2(
           Icon(
             imageVector = Icons.Default.ErrorOutline,
             contentDescription = "Error",
-            tint = Color.White,
+            tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(72.dp)
           )
           Text(
@@ -153,8 +152,8 @@ fun MovieDetailScreenV2(
           Button(
             onClick = { viewModel.loadMovie(movieId) },
             colors = ButtonDefaults.buttonColors(
-              containerColor = Color(0xFFFFFFFF),
-              contentColor = Color.Black
+              containerColor = MaterialTheme.colorScheme.primary,
+              contentColor = MaterialTheme.colorScheme.onPrimary
             )
           ) {
             Text(

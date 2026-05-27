@@ -11,6 +11,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -47,7 +48,7 @@ fun VersionScreen(
     Column(
       modifier = Modifier
         .fillMaxSize()
-        .background(Color.Black)
+        .background(MaterialTheme.colorScheme.background)
         .padding(padding),
       horizontalAlignment = Alignment.CenterHorizontally,
       verticalArrangement = Arrangement.spacedBy(
@@ -58,8 +59,8 @@ fun VersionScreen(
       Button(
         onClick = { navigateToDetail1(movieId) },
         colors = ButtonDefaults.buttonColors(
-          containerColor = Color.White,
-          contentColor = Color.Black
+          containerColor = MaterialTheme.colorScheme.primary,
+          contentColor = MaterialTheme.colorScheme.onPrimary
         )
       ) {
         Text(text = "Version 1")
@@ -68,8 +69,8 @@ fun VersionScreen(
       Button(
         onClick = { navigateToDetail2(movieId) },
         colors = ButtonDefaults.buttonColors(
-          containerColor = Color.White,
-          contentColor = Color.Black
+          containerColor = MaterialTheme.colorScheme.primary,
+          contentColor = MaterialTheme.colorScheme.onPrimary
         )
       ) {
         Text(text = "Version 2")
