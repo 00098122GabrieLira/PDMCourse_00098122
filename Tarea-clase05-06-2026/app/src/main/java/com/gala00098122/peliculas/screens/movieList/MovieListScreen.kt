@@ -12,10 +12,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
@@ -36,6 +38,7 @@ import com.gala00098122.peliculas.scaffold.AppScaffold
 fun MovieListScreen(
   navigateToVersions: (Int) -> Unit,
   navigateToUpComing: () -> Unit,
+  navigateToSearch: () -> Unit,
   viewModel: MovieListViewModel = viewModel()
 ) {
   
@@ -101,6 +104,12 @@ fun MovieListScreen(
         )
       ) {
         Text(text = "Proximamente")
+      }
+      IconButton(onClick = { navigateToSearch() }) {
+        Icon(
+          Icons.Default.Search,
+          contentDescription = "Buscar",
+        )
       }
     }
   ) { padding ->

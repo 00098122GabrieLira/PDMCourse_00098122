@@ -19,4 +19,7 @@ sealed class Routes : NavKey {
   
   @Serializable
   data object Soon : Routes()
+  
+  @Serializable
+  data object Search : Routes()
 }

@@ -11,6 +11,7 @@ import androidx.navigation3.ui.NavDisplay
 import com.gala00098122.peliculas.screens.movieList.MovieListScreen
 import com.gala00098122.peliculas.screens.movieDetailScreen.MovieDetailScreen
 import com.gala00098122.peliculas.screens.movieDetailScreenV2.MovieDetailScreenV2
+import com.gala00098122.peliculas.screens.searchScreen.SearchScreen
 import com.gala00098122.peliculas.screens.upComingScreen.UpComingScreen
 import com.gala00098122.peliculas.screens.versions.VersionScreen
 
@@ -27,7 +28,8 @@ fun MovieApp() {
           navigateToVersions = { movieId ->
             backStack.add(Routes.Versions(movieId))
           },
-          navigateToUpComing = { backStack.add(Routes.Soon) }
+          navigateToUpComing = { backStack.add(Routes.Soon) },
+          navigateToSearch = { backStack.add(Routes.Search) }
         )
       }
       entry<Routes.Versions> { key ->
@@ -62,6 +64,16 @@ fun MovieApp() {
       }
       entry<Routes.Soon> {
         UpComingScreen(
+          navigateBack = {
+            backStack.removeLastOrNull()
+          },
+          navigateToVersions = { movieId ->
+            backStack.add(Routes.Versions(movieId))
+          }
+        )
+      }
+      entry<Routes.Search> {
+        SearchScreen(
           navigateBack = {
             backStack.removeLastOrNull()
           },
