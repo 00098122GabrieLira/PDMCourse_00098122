@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.home.components
+package com.gala00098122.tarea_room.screens.questions.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,7 +17,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
@@ -27,16 +26,14 @@ import androidx.compose.ui.unit.dp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocalBottomSheet(
-  onSave: (name: String, imageUrl: String, votes: Int) -> Unit,
+fun QuestionBottomSheet(
+  onSave: (title: String) -> Unit,
   onDismiss: () -> Unit
 ) {
   val sheetState = rememberModalBottomSheetState()
-  var name by rememberSaveable { mutableStateOf("") }
-  var imageUrl by rememberSaveable { mutableStateOf("") }
-  var votes by rememberSaveable { mutableStateOf("") }
+  var title by rememberSaveable { mutableStateOf("") }
   
-  val isValid = name.isNotBlank() && imageUrl.isNotBlank() && votes.isNotBlank()
+  val isValid = title.isNotBlank()
   
   ModalBottomSheet(
     sheetState = sheetState,
@@ -50,36 +47,20 @@ fun LocalBottomSheet(
       verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
       Text(
-        text = "Nueva opción",
+        text = "Nueva pregunta",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold
       )
       Text(
-        text = "Agrega nombre e imagen para que aparezca en la lista.",
+        text = "Agrega una pregunta para que aparezca en la lista.",
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
       
       OutlinedTextField(
-        value = name,
-        onValueChange = { name = it },
-        label = { Text("Nombre del lugar") },
-        modifier = Modifier.fillMaxWidth(),
-        singleLine = true
-      )
-      
-      OutlinedTextField(
-        value = imageUrl,
-        onValueChange = { imageUrl = it },
-        label = { Text("URL de la imagen") },
-        modifier = Modifier.fillMaxWidth(),
-        singleLine = true
-      )
-      
-      OutlinedTextField(
-        value = votes,
-        onValueChange = { votes = it },
-        label = { Text("Votos") },
+        value = title,
+        onValueChange = { title = it },
+        label = { Text("Titulo") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true
       )
@@ -93,7 +74,7 @@ fun LocalBottomSheet(
         Button(
           onClick = {
             if (isValid) {
-              onSave(name.trim(), imageUrl.trim(), votes.toInt() )
+              onSave(title.trim())
               onDismiss()
             }
           },

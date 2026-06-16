@@ -5,16 +5,19 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.gala00098122.tarea_room.data.database.dao.LocalDAO
+import com.gala00098122.tarea_room.data.database.dao.QuestionDAO
 import com.gala00098122.tarea_room.data.database.entities.LocalEntity
+import com.gala00098122.tarea_room.data.database.entities.QuestionEntity
 
 @Database(
-  entities = [LocalEntity::class],
-  version = 1,
+  entities = [LocalEntity::class, QuestionEntity::class],
+  version = 2,
   exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
   
   abstract fun localDAO(): LocalDAO
+  abstract fun questionDAO(): QuestionDAO
   
   companion object {
     @Volatile

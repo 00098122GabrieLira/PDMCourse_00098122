@@ -13,8 +13,13 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class LocalsViewModel(private val localRepository: LocalRepository) : ViewModel() {
-  val locals: StateFlow<List<Local>> = localRepository.getLocals().stateIn(
+class LocalsViewModel(
+  private val localRepository: LocalRepository,
+  private val questionId: Int) :
+  ViewModel() {
+  
+  val locals: StateFlow<List<Local>> = localRepository.getLocals(questionId)
+    .stateIn(
     scope = viewModelScope,
     started = SharingStarted.WhileSubscribed(5_000),
     initialValue = emptyList()
@@ -22,7 +27,7 @@ class LocalsViewModel(private val localRepository: LocalRepository) : ViewModel(
   
   fun addLocal(name: String, imageUrl: String, votes: Int) {
     viewModelScope.launch {
-      localRepository.addLocal(Local(name = name, imageUrl = imageUrl, votes = votes))
+      localRepository.addLocal(name, imageUrl, votes, questionId)
     }
   }
   
@@ -33,10 +38,10 @@ class LocalsViewModel(private val localRepository: LocalRepository) : ViewModel(
   }
   
   companion object {
-    val Factory = viewModelFactory {
+    fun provideFactory(questionId: Int) = viewModelFactory {
       initializer {
         val app = this[APPLICATION_KEY] as TareaRoomApplication
-        LocalsViewModel(app.appProvider.provideLocalRepository())
+        LocalsViewModel(app.appProvider.provideLocalRepository(), questionId)
       }
     }
   }

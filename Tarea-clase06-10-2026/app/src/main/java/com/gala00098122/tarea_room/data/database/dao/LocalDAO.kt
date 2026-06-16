@@ -11,8 +11,8 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface LocalDAO {
   
-  @Query("SELECT * FROM locals")
-  fun getAllLocals(): Flow<List<LocalEntity>>
+  @Query("SELECT * FROM locals WHERE questionId = :questionId")
+  fun getLocalsForQuestion(questionId: Int): Flow<List<LocalEntity>>
   
   @Insert(onConflict = OnConflictStrategy.REPLACE)
   suspend fun insertLocal(local: LocalEntity)

@@ -10,13 +10,14 @@ import kotlin.collections.map
 
 class LocalRepositoryImpl(private val localDAO: LocalDAO) : LocalRepository {
   
-  override fun getLocals(): Flow<List<Local>> {
-    return localDAO.getAllLocals().map { entities ->
+  override fun getLocals(questionId: Int): Flow<List<Local>> {
+    return localDAO.getLocalsForQuestion(questionId).map { entities ->
       entities.map { it.toModel() }
     }
   }
   
-  override suspend fun addLocal(local: Local) {
+  override suspend fun addLocal(name: String, imageUrl: String, votes: Int, questionId: Int) {
+    val local = Local(name = name, imageUrl = imageUrl, votes = votes, questionId = questionId)
     localDAO.insertLocal(local.toEntity())
   }
   

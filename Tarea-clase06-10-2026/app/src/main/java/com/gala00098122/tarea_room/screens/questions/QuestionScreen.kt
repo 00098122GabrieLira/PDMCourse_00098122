@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.home
+package com.gala00098122.tarea_room.screens.questions
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Inbox
 import androidx.compose.material3.Icon
@@ -28,37 +27,24 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gala00098122.tarea_room.scaffold.AppScaffold
-import com.gala00098122.tarea_room.screens.home.components.LocalBottomSheet
-import com.gala00098122.tarea_room.screens.home.components.LocalItem
+import com.gala00098122.tarea_room.screens.questions.components.QuestionBottomSheet
+import com.gala00098122.tarea_room.screens.questions.components.QuestionItem
 
 @Composable
-fun LocalsScreen(
-  questionId: Int,
-  navigateBack: () -> Unit,
-  viewModel: LocalsViewModel = viewModel(
-    key = questionId.toString(),
-    factory = LocalsViewModel.provideFactory(questionId)
-  )
+fun QuestionScreen(
+  navigateToLocals: (Int) -> Unit,
+  viewModel: QuestionViewModel = viewModel(factory = QuestionViewModel.provideFactory())
 ) {
-  
-  val locals by viewModel.locals.collectAsStateWithLifecycle()
+  val questions by viewModel.questions.collectAsStateWithLifecycle()
   var showSheet by rememberSaveable { mutableStateOf(false) }
   
   AppScaffold(
-    title = "Administrar locales",
+    title = "Administrar preguntas",
     actions = {
       IconButton(onClick = { showSheet = true }) {
         Icon(
           imageVector = Icons.Default.Add,
           contentDescription = "Agregar local"
-        )
-      }
-    },
-    navigationIcon = {
-      IconButton(onClick = { navigateBack() }) {
-        Icon(
-          imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-          contentDescription = "Back"
         )
       }
     }
@@ -70,7 +56,7 @@ fun LocalsScreen(
         .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
       
-      if (locals.isEmpty()) {
+      if (questions.isEmpty()) {
         Column(
           modifier = Modifier.fillMaxSize(),
           horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,11 +70,11 @@ fun LocalsScreen(
           )
           
           Text(
-            text = "Todavia no hay locales",
+            text = "Todavia no hay preguntas",
             style = MaterialTheme.typography.titleMedium
           )
           Text(
-            text = "Toca + para crear uno nuevo.",
+            text = "Toca + para crear una nueva.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -99,12 +85,12 @@ fun LocalsScreen(
           contentPadding = PaddingValues(vertical = 4.dp),
           verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-          items(items = locals, key = { it.id }) { local ->
-            LocalItem(
-              local = local,
-              onDelete = { viewModel.deleteLocal(local) },
+          items(items = questions, key = { it.id }) { question ->
+            QuestionItem(
+              question = question,
+              onDelete = { viewModel.deleteQuestion(question) },
+              onClick = { navigateToLocals(question.id) }
             )
-            Spacer(modifier = Modifier.height(4.dp))
           }
         }
       }
@@ -112,9 +98,9 @@ fun LocalsScreen(
   }
   
   if (showSheet) {
-    LocalBottomSheet(
-      onSave = { name, imageUrl, votes ->
-        viewModel.addLocal(name, imageUrl, votes)
+    QuestionBottomSheet(
+      onSave = { title ->
+        viewModel.addQuestion(title)
       },
       onDismiss = { showSheet = false }
     )
