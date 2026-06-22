@@ -4,10 +4,10 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.gala00098122.tarea_room.data.model.Local
+import com.gala00098122.tarea_room.data.model.Option
 
 @Entity(
-  tableName = "locals",
+  tableName = "options",
   foreignKeys = [
     ForeignKey(
       entity = QuestionEntity::class,
@@ -18,29 +18,29 @@ import com.gala00098122.tarea_room.data.model.Local
   ],
   indices = [Index("questionId")]
 )
-data class LocalEntity(
+data class OptionEntity(
   @PrimaryKey(autoGenerate = true)
   val id: Int = 0,
-  val name: String,
-  val imageUrl: String,
+  val value: String,
+  val imageUrl: String? = null,
   val votes: Int,
   val questionId: Int
 )
 
-fun LocalEntity.toModel(): Local {
-  return Local(
+fun OptionEntity.toModel(): Option {
+  return Option(
     id = id,
-    name = name,
+    value = value,
     imageUrl = imageUrl,
     votes = votes,
     questionId = questionId
   )
 }
 
-fun Local.toEntity(): LocalEntity {
-  return LocalEntity(
+fun Option.toEntity(): OptionEntity {
+  return OptionEntity(
     id = id,
-    name = name,
+    value = value,
     imageUrl = imageUrl,
     votes = votes,
     questionId = questionId

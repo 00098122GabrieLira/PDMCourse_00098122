@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.home
+package com.gala00098122.tarea_room.screens.options
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -27,30 +27,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.gala00098122.tarea_room.data.model.Option
 import com.gala00098122.tarea_room.scaffold.AppScaffold
-import com.gala00098122.tarea_room.screens.home.components.LocalBottomSheet
-import com.gala00098122.tarea_room.screens.home.components.LocalItem
+import com.gala00098122.tarea_room.screens.options.components.OptionBottomSheet
+import com.gala00098122.tarea_room.screens.options.components.OptionItem
 
 @Composable
-fun LocalsScreen(
+fun OptionsScreen(
   questionId: Int,
   navigateBack: () -> Unit,
-  viewModel: LocalsViewModel = viewModel(
+  viewModel: OptionsViewModel = viewModel(
     key = questionId.toString(),
-    factory = LocalsViewModel.provideFactory(questionId)
+    factory = OptionsViewModel.provideFactory(questionId)
   )
 ) {
   
-  val locals by viewModel.locals.collectAsStateWithLifecycle()
+  val options by viewModel.options.collectAsStateWithLifecycle()
   var showSheet by rememberSaveable { mutableStateOf(false) }
+  var editingOption by rememberSaveable { mutableStateOf<Option?>(null) }
   
   AppScaffold(
-    title = "Administrar locales",
+    title = "Administrar opciones",
     actions = {
       IconButton(onClick = { showSheet = true }) {
         Icon(
           imageVector = Icons.Default.Add,
-          contentDescription = "Agregar local"
+          contentDescription = "Agregar opción"
         )
       }
     },
@@ -70,7 +72,7 @@ fun LocalsScreen(
         .padding(horizontal = 16.dp, vertical = 12.dp)
     ) {
       
-      if (locals.isEmpty()) {
+      if (options.isEmpty()) {
         Column(
           modifier = Modifier.fillMaxSize(),
           horizontalAlignment = Alignment.CenterHorizontally,
@@ -84,11 +86,11 @@ fun LocalsScreen(
           )
           
           Text(
-            text = "Todavia no hay locales",
+            text = "Todavia no hay opciones",
             style = MaterialTheme.typography.titleMedium
           )
           Text(
-            text = "Toca + para crear uno nuevo.",
+            text = "Toca + para crear una nueva.",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.onSurfaceVariant
           )
@@ -99,10 +101,11 @@ fun LocalsScreen(
           contentPadding = PaddingValues(vertical = 4.dp),
           verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
-          items(items = locals, key = { it.id }) { local ->
-            LocalItem(
-              local = local,
-              onDelete = { viewModel.deleteLocal(local) },
+          items(items = options, key = { it.id }) { local ->
+            OptionItem(
+              option = local,
+              onDelete = { viewModel.deleteOption(local) },
+              onEdit = { editingOption = it }
             )
             Spacer(modifier = Modifier.height(4.dp))
           }
@@ -112,11 +115,34 @@ fun LocalsScreen(
   }
   
   if (showSheet) {
-    LocalBottomSheet(
+    OptionBottomSheet(
+      initialOption = null,
       onSave = { name, imageUrl, votes ->
-        viewModel.addLocal(name, imageUrl, votes)
+        viewModel.addOption(name, imageUrl, votes)
       },
       onDismiss = { showSheet = false }
     )
   }
+  
+  if (editingOption != null) {
+    OptionBottomSheet(
+      initialOption = editingOption,
+      onSave = { name, imageUrl, votes ->
+        
+        val updatedLocal = editingOption?.copy(
+          value = name,
+          imageUrl = imageUrl,
+          votes = votes
+        )
+        
+        updatedLocal?.let { viewModel.updateOption(it) }
+        
+        editingOption = null
+      },
+      onDismiss = {
+        editingOption = null
+      }
+    )
+  }
+  
 }

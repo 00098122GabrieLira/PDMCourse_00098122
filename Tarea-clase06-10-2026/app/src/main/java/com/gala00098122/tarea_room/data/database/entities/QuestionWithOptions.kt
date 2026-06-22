@@ -10,7 +10,7 @@ data class QuestionWithOptions(
     parentColumn = "id",
     entityColumn = "questionId"
   )
-  val options: List<LocalEntity>
+  val options: List<OptionEntity>
 )
 
 fun QuestionWithOptions.toModel(): Question {

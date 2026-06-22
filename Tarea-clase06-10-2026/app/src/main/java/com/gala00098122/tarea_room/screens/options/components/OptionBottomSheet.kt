@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.home.components
+package com.gala00098122.tarea_room.screens.options.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -17,26 +17,28 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gala00098122.tarea_room.data.model.Option
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LocalBottomSheet(
-  onSave: (name: String, imageUrl: String, votes: Int) -> Unit,
+fun OptionBottomSheet(
+  initialOption: Option? = null,
+  onSave: (value: String, imageUrl: String, votes: Int) -> Unit,
   onDismiss: () -> Unit
 ) {
   val sheetState = rememberModalBottomSheetState()
-  var name by rememberSaveable { mutableStateOf("") }
-  var imageUrl by rememberSaveable { mutableStateOf("") }
-  var votes by rememberSaveable { mutableStateOf("") }
+  var value by rememberSaveable { mutableStateOf(initialOption?.value ?: "") }
+  var imageUrl by rememberSaveable { mutableStateOf(initialOption?.imageUrl ?: "") }
+  var votes by rememberSaveable { mutableStateOf(initialOption?.votes?.toString() ?: "") }
   
-  val isValid = name.isNotBlank() && imageUrl.isNotBlank() && votes.isNotBlank()
+  val isValid = value.isNotBlank() && imageUrl.isNotBlank() && votes.isNotBlank()
+  val isEditing = initialOption != null
   
   ModalBottomSheet(
     sheetState = sheetState,
@@ -50,19 +52,19 @@ fun LocalBottomSheet(
       verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
       Text(
-        text = "Nueva opción",
+        text = if (isEditing) "Editar opción" else "Nueva opción",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold
       )
       Text(
-        text = "Agrega nombre e imagen para que aparezca en la lista.",
+        text = if (isEditing) "Modifica datos." else "Agrega nombre e imagen para que aparezca en la lista.",
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
       
       OutlinedTextField(
-        value = name,
-        onValueChange = { name = it },
+        value = value,
+        onValueChange = { value = it },
         label = { Text("Nombre del lugar") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true
@@ -93,13 +95,13 @@ fun LocalBottomSheet(
         Button(
           onClick = {
             if (isValid) {
-              onSave(name.trim(), imageUrl.trim(), votes.toInt() )
+              onSave(value.trim(), imageUrl.trim(), votes.toInt())
               onDismiss()
             }
           },
           enabled = isValid
         ) {
-          Text("Guardar")
+          Text(if (isEditing) "Actualizar" else "Guardar")
         }
       }
     }

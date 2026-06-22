@@ -25,13 +25,20 @@ class QuestionViewModel(
     )
   
   fun addQuestion(title: String) {
-    viewModelScope.launch { questionRepository.addQuestion(title)
+    viewModelScope.launch {
+      questionRepository.addQuestion(title)
     }
   }
   
   fun deleteQuestion(question: Question) {
     viewModelScope.launch {
       questionRepository.deleteQuestion(question)
+    }
+  }
+  
+  fun updateQuestion(question: Question) {
+    viewModelScope.launch {
+      questionRepository.updateQuestion(question)
     }
   }
   

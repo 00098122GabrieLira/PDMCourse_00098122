@@ -8,8 +8,9 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.gala00098122.tarea_room.screens.home.LocalsScreen
+import com.gala00098122.tarea_room.screens.options.OptionsScreen
 import com.gala00098122.tarea_room.navegation.routes.Routes
+import com.gala00098122.tarea_room.screens.home.Menu
 import com.gala00098122.tarea_room.screens.questions.QuestionScreen
 
 @Composable
@@ -21,15 +22,20 @@ fun RoomNavigation() {
     onBack = { backStack.removeLastOrNull() },
     entryProvider = entryProvider {
       entry<Routes.Home> {
+        Menu(
+          navigateToQuestions = { backStack.add(Routes.Questions) }
+        )
+      }
+      entry<Routes.Questions> {
         QuestionScreen(
-          navigateToLocals = { questionId ->
-            backStack.add(Routes.Locals(questionId))
+          navigateBack = { backStack.removeLastOrNull()},
+          navigateToOptions = { questionId ->
+            backStack.add(Routes.Options(questionId))
           }
         )
-        
       }
-      entry<Routes.Locals> {
-        LocalsScreen(
+      entry<Routes.Options> {
+        OptionsScreen(
           questionId = it.questionId,
           navigateBack = { backStack.removeLastOrNull()},
         )

@@ -1,11 +1,11 @@
 package com.gala00098122.tarea_room.data.remote.locals.getLocals
 
-import com.gala00098122.tarea_room.data.model.Local
+import com.gala00098122.tarea_room.data.model.Option
 
-fun LocalDTO.toModel(): Local {
-  return Local(
+fun LocalDTO.toModel(): Option {
+  return Option(
     id = id,
-    name = name,
+    value = name,
     imageUrl = imageUrl,
     votes = votes
   )

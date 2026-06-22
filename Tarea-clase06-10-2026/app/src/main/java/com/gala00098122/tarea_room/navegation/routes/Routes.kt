@@ -8,6 +8,10 @@ sealed class Routes : NavKey {
   data object Home : Routes()
   
   @Serializable
-  data class Locals (val questionId: Int) : Routes()
+  data object Questions : Routes()
+
+  
+  @Serializable
+  data class Options (val questionId: Int) : Routes()
   
 }

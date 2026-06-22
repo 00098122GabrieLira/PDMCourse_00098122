@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.home
+package com.gala00098122.tarea_room.screens.options
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -6,34 +6,40 @@ import androidx.lifecycle.viewmodel.initializer
 import androidx.lifecycle.viewmodel.viewModelFactory
 import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import com.gala00098122.tarea_room.TareaRoomApplication
-import com.gala00098122.tarea_room.data.repository.localRepository.LocalRepository
-import com.gala00098122.tarea_room.data.model.Local
+import com.gala00098122.tarea_room.data.repository.optionRepository.OptionRepository
+import com.gala00098122.tarea_room.data.model.Option
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class LocalsViewModel(
-  private val localRepository: LocalRepository,
+class OptionsViewModel(
+  private val optionRepository: OptionRepository,
   private val questionId: Int) :
   ViewModel() {
   
-  val locals: StateFlow<List<Local>> = localRepository.getLocals(questionId)
+  val options: StateFlow<List<Option>> = optionRepository.getOptions(questionId)
     .stateIn(
     scope = viewModelScope,
     started = SharingStarted.WhileSubscribed(5_000),
     initialValue = emptyList()
   )
   
-  fun addLocal(name: String, imageUrl: String, votes: Int) {
+  fun addOption(name: String, imageUrl: String, votes: Int) {
     viewModelScope.launch {
-      localRepository.addLocal(name, imageUrl, votes, questionId)
+      optionRepository.addOption(name, imageUrl, votes, questionId)
     }
   }
   
-  fun deleteLocal(local: Local) {
+  fun deleteOption(option: Option) {
     viewModelScope.launch {
-      localRepository.deleteLocal(local)
+      optionRepository.deleteOption(option)
+    }
+  }
+  
+  fun updateOption(option:Option){
+    viewModelScope.launch {
+      optionRepository.updateOption(option)
     }
   }
   
@@ -41,7 +47,7 @@ class LocalsViewModel(
     fun provideFactory(questionId: Int) = viewModelFactory {
       initializer {
         val app = this[APPLICATION_KEY] as TareaRoomApplication
-        LocalsViewModel(app.appProvider.provideLocalRepository(), questionId)
+        OptionsViewModel(app.appProvider.provideOptionRepository(), questionId)
       }
     }
   }
