@@ -1,9 +1,8 @@
-package com.gala00098122.peliculas.screens.movieDetailScreen
+package com.gala00098122.peliculas.ui.screens.movieDetailScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -31,23 +30,28 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
 import com.gala00098122.peliculas.scaffold.AppScaffold
-
+import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieViewModel
 
 @Composable
 fun MovieDetailScreen(
   movieId: Int,
   navigateBack: () -> Unit,
-  viewModel: MovieDetailViewModel = viewModel()
+  movieDetailViewModel: MovieDetailViewModel = viewModel(),
+  favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
-  val movie by viewModel.movie.collectAsState()
-  val isLoading by viewModel.isLoading.collectAsState()
-  val error by viewModel.error.collectAsState()
+  val movie by movieDetailViewModel.movie.collectAsState()
+  val isLoading by movieDetailViewModel.isLoading.collectAsState()
+  val error by movieDetailViewModel.error.collectAsState()
+  val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
+  
+  val isFavorite = movie?.id?.let { it in favoriteMoviesIds } ?: false
   
   LaunchedEffect(movieId) {
-    viewModel.loadMovie(movieId)
+    movieDetailViewModel.loadMovie(movieId)
   }
   
   AppScaffold(
@@ -96,7 +100,7 @@ fun MovieDetailScreen(
             textAlign = TextAlign.Center,
           )
           Button(
-            onClick = { viewModel.loadMovie(movieId) },
+            onClick = { movieDetailViewModel.loadMovie(movieId) },
             colors = ButtonDefaults.buttonColors(
               containerColor = MaterialTheme.colorScheme.primary,
               contentColor = MaterialTheme.colorScheme.onPrimary
@@ -124,40 +128,47 @@ fun MovieDetailScreen(
               .height(220.dp),
             contentScale = ContentScale.Crop
           )
-          Column(modifier = Modifier.padding(16.dp)) {
+          Column(modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(
               text = movie!!.title,
               style = MaterialTheme.typography.headlineSmall,
               fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            
             Text(
               text = movie!!.originalTitle,
               style = MaterialTheme.typography.bodyMedium,
               color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            
             Text(
               text = "Rating: ${"%.2f".format(movie!!.voteAverage)}  -  ${movie!!.releaseDate}",
               style = MaterialTheme.typography.bodyMedium
             )
-            Spacer(modifier = Modifier.height(8.dp))
+            
             Text(
               text = "Popularidad: ${"%.1f".format(movie!!.popularity)}",
               style = MaterialTheme.typography.bodySmall,
               color = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            Spacer(modifier = Modifier.height(16.dp))
+            
             Text(
               text = "Sinopsis",
               style = MaterialTheme.typography.titleMedium,
               fontWeight = FontWeight.Bold
             )
-            Spacer(modifier = Modifier.height(4.dp))
+            
             Text(
               text = movie!!.overview,
               style = MaterialTheme.typography.bodyMedium
             )
+            
+            if (isFavorite) {
+              Text(text = "❤️ En tus favoritas")
+            } else {
+              Text(text = "")
+            }
           }
         }
       }

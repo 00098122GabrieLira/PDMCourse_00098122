@@ -1,6 +1,6 @@
 package com.gala00098122.peliculas.data.api.movies.getMovies
 
-import com.gala00098122.peliculas.model.Movie
+import com.gala00098122.peliculas.data.model.Movie
 private const val IMAGE_BASE_URL = "https://image.tmdb.org/t/p/w500"
 
 fun MovieDto.toModel(): Movie {

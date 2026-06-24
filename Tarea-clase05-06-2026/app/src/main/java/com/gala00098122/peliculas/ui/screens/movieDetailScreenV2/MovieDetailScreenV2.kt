@@ -1,4 +1,4 @@
-package com.gala00098122.peliculas.screens.movieDetailScreenV2
+package com.gala00098122.peliculas.ui.screens.movieDetailScreenV2
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -54,10 +55,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import coil3.compose.AsyncImage
-import com.gala00098122.peliculas.model.Movie
+import com.gala00098122.peliculas.data.model.Movie
 import com.gala00098122.peliculas.scaffold.AppScaffold
+import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieViewModel
 import kotlinx.coroutines.launch
 
 private val genreNames = mapOf(
@@ -80,16 +83,18 @@ private val genreNames = mapOf(
 fun MovieDetailScreenV2(
   movieId: Int,
   navigateBack: () -> Unit,
-  viewModel: MovieDetailViewModelV2 = viewModel()
+  movieDetailViewModelV2: MovieDetailViewModelV2 = viewModel(),
+  favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
-  val movie by viewModel.movie.collectAsState()
-  val isLoading by viewModel.isLoading.collectAsState()
-  val error by viewModel.error.collectAsState()
+  val movie by movieDetailViewModelV2.movie.collectAsState()
+  val isLoading by movieDetailViewModelV2.isLoading.collectAsState()
+  val error by movieDetailViewModelV2.error.collectAsState()
+  val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   val snackbarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
   
   LaunchedEffect(movieId) {
-    viewModel.loadMovie(movieId)
+    movieDetailViewModelV2.loadMovie(movieId)
   }
   
   AppScaffold(
@@ -150,7 +155,7 @@ fun MovieDetailScreenV2(
             textAlign = TextAlign.Center,
           )
           Button(
-            onClick = { viewModel.loadMovie(movieId) },
+            onClick = { movieDetailViewModelV2.loadMovie(movieId) },
             colors = ButtonDefaults.buttonColors(
               containerColor = MaterialTheme.colorScheme.primary,
               contentColor = MaterialTheme.colorScheme.onPrimary
@@ -170,7 +175,7 @@ fun MovieDetailScreenV2(
             .padding(padding)
             .verticalScroll(rememberScrollState())
         ) {
-          HeroHeader(movie = movie!!)
+          HeroHeader(movie = movie!!, favoriteMoviesIds = favoriteMoviesIds)
           Spacer(modifier = Modifier.height(16.dp))
           StatsRow(movie = movie!!)
           if (movie!!.genreIds.isNotEmpty()) {
@@ -192,7 +197,7 @@ fun MovieDetailScreenV2(
 }
 
 @Composable
-private fun HeroHeader(movie: Movie) {
+private fun HeroHeader(movie: Movie, favoriteMoviesIds: Set<Int>) {
   Box(modifier = Modifier.fillMaxWidth()) {
     AsyncImage(
       model = movie.backdropUrl,
@@ -252,6 +257,8 @@ private fun HeroHeader(movie: Movie) {
         }
         Spacer(modifier = Modifier.height(8.dp))
         RatingBadge(rating = movie.voteAverage, votes = movie.voteCount)
+        Spacer(modifier = Modifier.height(8.dp))
+        FavoriteBadge(movieId = movie.id, favoriteMoviesIds = favoriteMoviesIds)
       }
     }
   }
@@ -284,6 +291,36 @@ private fun RatingBadge(rating: Double, votes: Int) {
       style = MaterialTheme.typography.labelSmall,
       color = Color.White.copy(alpha = 0.8f)
     )
+  }
+}
+
+@Composable
+private fun FavoriteBadge(movieId: Int, favoriteMoviesIds: Set<Int>) {
+  
+  val isFavorite = movieId in favoriteMoviesIds
+  
+  if (isFavorite) {
+    Row(
+      verticalAlignment = Alignment.CenterVertically,
+      modifier = Modifier
+        .clip(RoundedCornerShape(50))
+        .background(Color.Black.copy(alpha = 0.55f))
+        .padding(horizontal = 10.dp, vertical = 6.dp)
+    ) {
+      Icon(
+        imageVector = Icons.Filled.Favorite,
+        contentDescription = null,
+        tint = Color.Red,
+        modifier = Modifier.size(16.dp)
+      )
+      Spacer(modifier = Modifier.width(4.dp))
+      Text(
+        text = "En tus favoritas",
+        style = MaterialTheme.typography.labelLarge,
+        fontWeight = FontWeight.Bold,
+        color = Color.White
+      )
+    }
   }
 }
 

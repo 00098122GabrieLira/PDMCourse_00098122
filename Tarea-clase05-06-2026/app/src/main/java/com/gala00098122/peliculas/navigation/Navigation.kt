@@ -8,12 +8,13 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.gala00098122.peliculas.screens.movieList.MovieListScreen
-import com.gala00098122.peliculas.screens.movieDetailScreen.MovieDetailScreen
-import com.gala00098122.peliculas.screens.movieDetailScreenV2.MovieDetailScreenV2
-import com.gala00098122.peliculas.screens.searchScreen.SearchScreen
-import com.gala00098122.peliculas.screens.upComingScreen.UpComingScreen
-import com.gala00098122.peliculas.screens.versions.VersionScreen
+import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieScreen
+import com.gala00098122.peliculas.ui.screens.movieList.MovieListScreen
+import com.gala00098122.peliculas.ui.screens.movieDetailScreen.MovieDetailScreen
+import com.gala00098122.peliculas.ui.screens.movieDetailScreenV2.MovieDetailScreenV2
+import com.gala00098122.peliculas.ui.screens.searchScreen.SearchScreen
+import com.gala00098122.peliculas.ui.screens.upComingScreen.UpComingScreen
+import com.gala00098122.peliculas.ui.screens.versions.VersionScreen
 
 @Composable
 fun MovieApp() {
@@ -29,7 +30,8 @@ fun MovieApp() {
             backStack.add(Routes.Versions(movieId))
           },
           navigateToUpComing = { backStack.add(Routes.Soon) },
-          navigateToSearch = { backStack.add(Routes.Search) }
+          navigateToSearch = { backStack.add(Routes.Search) },
+          navigateToFavorites = { backStack.add(Routes.Favorite) }
         )
       }
       entry<Routes.Versions> { key ->
@@ -74,6 +76,16 @@ fun MovieApp() {
       }
       entry<Routes.Search> {
         SearchScreen(
+          navigateBack = {
+            backStack.removeLastOrNull()
+          },
+          navigateToVersions = { movieId ->
+            backStack.add(Routes.Versions(movieId))
+          }
+        )
+      }
+      entry<Routes.Favorite> {
+        FavoriteMovieScreen(
           navigateBack = {
             backStack.removeLastOrNull()
           },

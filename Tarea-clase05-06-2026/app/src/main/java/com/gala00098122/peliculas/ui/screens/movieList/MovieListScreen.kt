@@ -1,4 +1,4 @@
-package com.gala00098122.peliculas.screens.upComingScreen
+package com.gala00098122.peliculas.ui.screens.movieList
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -11,8 +11,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ErrorOutline
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -29,30 +30,38 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gala00098122.peliculas.components.MovieItem
 import com.gala00098122.peliculas.scaffold.AppScaffold
+import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieViewModel
+
 
 @Composable
-fun UpComingScreen(
+fun MovieListScreen(
   navigateToVersions: (Int) -> Unit,
-  navigateBack: () -> Unit,
-  viewModel: UpComingViewModel = viewModel()
+  navigateToUpComing: () -> Unit,
+  navigateToSearch: () -> Unit,
+  navigateToFavorites: () -> Unit,
+  movieListViewModel: MovieListViewModel = viewModel(),
+  favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
-  val movies by viewModel.movies.collectAsState()
-  val loading by viewModel.loading.collectAsState()
-  val error by viewModel.error.collectAsState()
-  val refresh by viewModel.refresh.collectAsState()
+  
+  val movies by movieListViewModel.movies.collectAsState()
+  val loading by movieListViewModel.loading.collectAsState()
+  val error by movieListViewModel.error.collectAsState()
+  val refresh by movieListViewModel.refresh.collectAsState()
+  val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   
   if (loading) {
-    AppScaffold(title = "Cargando...") { padding ->
+    AppScaffold(title = "Movies") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
     }
     return
   }
   
   if (error != null) {
-    AppScaffold(title = "Coming Soon") { padding ->
+    AppScaffold(title = "Movies") { padding ->
       Column(
         modifier = Modifier
           .fillMaxSize()
@@ -75,7 +84,7 @@ fun UpComingScreen(
           textAlign = TextAlign.Center,
         )
         Button(
-          onClick = { viewModel.loadMovies() },
+          onClick = { movieListViewModel.loadMovies() },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -91,19 +100,34 @@ fun UpComingScreen(
   }
   
   AppScaffold(
-    title = "Coming Soon",
-    navigationIcon = {
-      IconButton(onClick = { navigateBack() }) {
+    title = "Movies",
+    actions = {
+      Button(
+        onClick = { navigateToUpComing() },
+        colors = ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.primary,
+          contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+      ) {
+        Text(text = "Proximamente")
+      }
+      IconButton(onClick = { navigateToSearch() }) {
         Icon(
-          imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-          contentDescription = "Back"
+          Icons.Default.Search,
+          contentDescription = "Buscar",
+        )
+      }
+      IconButton(onClick = { navigateToFavorites() }) {
+        Icon(
+          Icons.Default.Favorite,
+          contentDescription = "Buscar",
         )
       }
     }
   ) { padding ->
     PullToRefreshBox(
       isRefreshing = refresh,
-      onRefresh = { viewModel.refreshMovies() },
+      onRefresh = { movieListViewModel.refreshMovies() },
       modifier = Modifier.fillMaxSize()
     ) {
       LazyColumn(
@@ -114,9 +138,13 @@ fun UpComingScreen(
           .padding(16.dp),
       ) {
         items(movies) { movie ->
+          val isFavorite = movie.id in favoriteMoviesIds
           MovieItem(
             movie = movie,
-            onClick = { navigateToVersions(movie.id) }
+            isFavorite = isFavorite,
+            onClick = { navigateToVersions(movie.id) },
+            addFavorite = { favoriteMovieViewModel.addFavoriteMovie(movie) },
+            deleteFavorite = { favoriteMovieViewModel.deleteFavoriteMovie(movie) }
           )
           Spacer(modifier = Modifier.height(12.dp))
         }

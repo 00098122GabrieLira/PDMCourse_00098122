@@ -1,4 +1,4 @@
-package com.gala00098122.peliculas.screens.searchScreen
+package com.gala00098122.peliculas.ui.screens.searchScreen
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -22,26 +22,29 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gala00098122.peliculas.scaffold.AppScaffold
-import com.gala00098122.peliculas.screens.searchScreen.components.CustomizableSearchBar
+import com.gala00098122.peliculas.ui.screens.searchScreen.components.CustomizableSearchBar
 import androidx.compose.foundation.lazy.items
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.gala00098122.peliculas.components.MovieItem
+import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieViewModel
 
 @Composable
 fun SearchScreen(
   navigateBack: () -> Unit,
   navigateToVersions: (Int) -> Unit,
-  viewModel: SearchViewModel = viewModel()
+  searchViewModel: SearchViewModel = viewModel(),
+  favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
   
-  val searchResults by viewModel.searchResults.collectAsState()
-  val searchQuery by viewModel.searchQuery.collectAsState()
-  val loading by viewModel.loading.collectAsState()
-  val error by viewModel.error.collectAsState()
+  val searchResults by searchViewModel.searchResults.collectAsState()
+  val searchQuery by searchViewModel.searchQuery.collectAsState()
+  val loading by searchViewModel.loading.collectAsState()
+  val error by searchViewModel.error.collectAsState()
+  val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   
   if (loading) {
     AppScaffold(title = "Cargando...") { padding ->
@@ -74,7 +77,7 @@ fun SearchScreen(
           textAlign = TextAlign.Center,
         )
         Button(
-          onClick = { viewModel.loadMovies() },
+          onClick = { searchViewModel.loadMovies() },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -117,10 +120,10 @@ fun SearchScreen(
           CustomizableSearchBar(
             query = searchQuery,
             onQueryChange = {
-              viewModel.updateSearchQuery(it)
+              searchViewModel.updateSearchQuery(it)
             },
             onSearch = {
-              viewModel.updateSearchQuery(it)
+              searchViewModel.updateSearchQuery(it)
             },
             searchResults = emptyList(),
             onResultClick = {}
@@ -141,9 +144,13 @@ fun SearchScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
               ) {
                 items(searchResults) { movie ->
+                  val isFavorite = movie.id in favoriteMoviesIds
                   MovieItem(
                     movie = movie,
-                    onClick = { navigateToVersions(movie.id) }
+                    isFavorite = isFavorite,
+                    onClick = { navigateToVersions(movie.id) },
+                    addFavorite = { favoriteMovieViewModel.addFavoriteMovie(movie) },
+                    deleteFavorite = { favoriteMovieViewModel.deleteFavoriteMovie(movie) }
                   )
                 }
               }

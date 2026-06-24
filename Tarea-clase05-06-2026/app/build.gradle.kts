@@ -5,6 +5,7 @@ plugins {
   alias(libs.plugins.android.application)
   alias(libs.plugins.kotlin.compose)
   alias(libs.plugins.kotlin.serialization)
+  alias(libs.plugins.ksp)
 }
 
 val localProperties = Properties()
@@ -65,6 +66,16 @@ dependencies {
   implementation(libs.ktor.client.content.negotiation)
   implementation(libs.ktor.serialization.kotlinx.json)
   implementation(libs.ktor.client.logging)
+  
+  implementation(platform(libs.firebase.bom))
+  implementation(platform(libs.firebase.bom.v34120))
+  implementation(libs.firebase.crashlytics)
+  implementation(libs.firebase.analytics)
+  
+  implementation(libs.room.runtime)
+  implementation(libs.room.ktx)
+  ksp(libs.room.compiler)
+  implementation(libs.gson)
   
   implementation(libs.androidx.core.ktx)
   implementation(libs.androidx.lifecycle.runtime.ktx)

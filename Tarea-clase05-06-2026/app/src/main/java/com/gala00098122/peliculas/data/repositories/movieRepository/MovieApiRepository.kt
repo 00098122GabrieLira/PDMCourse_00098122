@@ -5,7 +5,7 @@ import com.gala00098122.peliculas.data.api.movies.getMovies.GetMoviesResponseDto
 import com.gala00098122.peliculas.data.api.movies.getMovies.MovieDto
 import com.gala00098122.peliculas.data.api.movies.getMovies.toModel
 import com.gala00098122.peliculas.data.api.movies.upComing.GetUpcomingMoviesResponseDto
-import com.gala00098122.peliculas.model.Movie
+import com.gala00098122.peliculas.data.model.Movie
 import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter

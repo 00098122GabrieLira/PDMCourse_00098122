@@ -1,4 +1,4 @@
-package com.gala00098122.peliculas.screens.movieDetailScreenV2
+package com.gala00098122.peliculas.ui.screens.movieDetailScreenV2
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -8,8 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
-import com.gala00098122.peliculas.model.Movie
-import kotlinx.coroutines.delay
+import com.gala00098122.peliculas.data.model.Movie
 
 class MovieDetailViewModelV2 : ViewModel() {
   

@@ -1,4 +1,4 @@
-package com.gala00098122.peliculas.model
+package com.gala00098122.peliculas.data.model
 
 data class Movie(
   val id: Int,

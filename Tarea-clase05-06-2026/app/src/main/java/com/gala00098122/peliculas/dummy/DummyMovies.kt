@@ -1,7 +1,5 @@
 package com.gala00098122.peliculas.dummy
 
-import com.gala00098122.peliculas.model.Movie
-
 /*val dummyMovies = listOf(
   Movie(
     id = 1226863,

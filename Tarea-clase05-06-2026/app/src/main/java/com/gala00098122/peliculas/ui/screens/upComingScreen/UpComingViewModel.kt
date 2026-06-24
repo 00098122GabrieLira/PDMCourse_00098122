@@ -1,16 +1,15 @@
-package com.gala00098122.peliculas.screens.movieList
+package com.gala00098122.peliculas.ui.screens.upComingScreen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gala00098122.peliculas.data.repositories.movieRepository.MovieApiRepository
 import com.gala00098122.peliculas.data.repositories.movieRepository.MovieRepository
+import com.gala00098122.peliculas.data.model.Movie
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import com.gala00098122.peliculas.model.Movie
 import kotlinx.coroutines.launch
 
-class MovieListViewModel : ViewModel() {
-  
+class UpComingViewModel: ViewModel() {
   private val movieRepository: MovieRepository = MovieApiRepository()
   
   private val _movies = MutableStateFlow<List<Movie>>(emptyList())
@@ -34,7 +33,7 @@ class MovieListViewModel : ViewModel() {
       _error.value = null
       _loading.value = true
       
-      movieRepository.getMovies()
+      movieRepository.getUpcomingMovies()
         .onSuccess { movies ->
           _movies.value = movies
           
@@ -53,7 +52,7 @@ class MovieListViewModel : ViewModel() {
       _error.value = null
       _refresh.value = true
       
-      movieRepository.getMovies()
+      movieRepository.getUpcomingMovies()
         .onSuccess { movies ->
           _movies.value = movies
           

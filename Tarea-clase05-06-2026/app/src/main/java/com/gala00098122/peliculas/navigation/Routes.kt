@@ -22,4 +22,7 @@ sealed class Routes : NavKey {
   
   @Serializable
   data object Search : Routes()
+  
+  @Serializable
+  data object Favorite : Routes()
 }
