@@ -56,7 +56,7 @@ fun UpComingScreen(
   }
   
   if (error != null) {
-    AppScaffold(title = "Coming Soon") { padding ->
+    AppScaffold(title = "Proximamente") { padding ->
       Column(
         modifier = Modifier
           .fillMaxSize()
@@ -95,7 +95,7 @@ fun UpComingScreen(
   }
   
   AppScaffold(
-    title = "Coming Soon",
+    title = "Proximamente",
     navigationIcon = {
       IconButton(onClick = { navigateBack() }) {
         Icon(

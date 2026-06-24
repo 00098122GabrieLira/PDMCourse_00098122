@@ -24,7 +24,7 @@ class FavoriteMovieRepositoryImpl(private val favoriteMovieDAO: MovieDAO) :
     return favoriteMovieDAO.deleteMovie(favoriteMovie.toEntity())
   }
   
-  override fun isFavorite(movieId: Int): Flow<Boolean> {
-    return favoriteMovieDAO.isFavorite(movieId)
+  override suspend fun clearFavoriteMovies() {
+    return favoriteMovieDAO.clearFavoriteMovies()
   }
 }

@@ -7,5 +7,5 @@ interface FavoriteMovieRepository {
   fun getFavoriteMovies(): Flow<List<Movie>>
   suspend fun addFavoriteMovie(favoriteMovie: Movie)
   suspend fun deleteFavoriteMovie(favoriteMovie: Movie)
-  fun isFavorite(movieId: Int): Flow<Boolean>
+  suspend fun clearFavoriteMovies()
 }

@@ -22,6 +22,8 @@ import com.gala00098122.peliculas.components.MovieItem
 import com.gala00098122.peliculas.scaffold.AppScaffold
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.HeartBroken
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.ui.Alignment
@@ -36,7 +38,18 @@ fun FavoriteMovieScreen(
   val favoriteMovies by viewModel.favoriteMovies.collectAsStateWithLifecycle()
   
   AppScaffold(
-    title = "Favorite Movies",
+    title = "Favoritas",
+    actions = {
+      Button(
+        onClick = { viewModel.clearFavoriteMovies() },
+        colors = ButtonDefaults.buttonColors(
+          containerColor = MaterialTheme.colorScheme.primary,
+          contentColor = MaterialTheme.colorScheme.onPrimary
+        )
+      ) {
+        Text(text = "Vaciar")
+      }
+    },
     navigationIcon = {
       IconButton(onClick = { navigateBack() }) {
         Icon(

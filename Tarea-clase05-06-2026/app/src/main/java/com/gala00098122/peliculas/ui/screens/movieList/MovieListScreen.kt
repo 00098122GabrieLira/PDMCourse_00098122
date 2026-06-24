@@ -54,14 +54,14 @@ fun MovieListScreen(
   val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   
   if (loading) {
-    AppScaffold(title = "Movies") { padding ->
+    AppScaffold(title = "Cargando...") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
     }
     return
   }
   
   if (error != null) {
-    AppScaffold(title = "Movies") { padding ->
+    AppScaffold(title = "Peliculas") { padding ->
       Column(
         modifier = Modifier
           .fillMaxSize()
@@ -100,7 +100,7 @@ fun MovieListScreen(
   }
   
   AppScaffold(
-    title = "Movies",
+    title = "Peliculas",
     actions = {
       Button(
         onClick = { navigateToUpComing() },

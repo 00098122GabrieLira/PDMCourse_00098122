@@ -32,10 +32,6 @@ class FavoriteMovieViewModel(private val favoriteMovieRepository: FavoriteMovieR
       initialValue = emptySet()
     )
   
-  fun isFavorite(movieId: Int): Boolean {
-    return favoriteMoviesIds.value.contains(movieId)
-  }
-  
   fun addFavoriteMovie(favoriteMovie: Movie) {
     viewModelScope.launch {
       favoriteMovieRepository.addFavoriteMovie(favoriteMovie)
@@ -45,6 +41,12 @@ class FavoriteMovieViewModel(private val favoriteMovieRepository: FavoriteMovieR
   fun deleteFavoriteMovie(favoriteMovie: Movie) {
     viewModelScope.launch {
       favoriteMovieRepository.deleteFavoriteMovie(favoriteMovie)
+    }
+  }
+  
+  fun clearFavoriteMovies() {
+    viewModelScope.launch {
+      favoriteMovieRepository.clearFavoriteMovies()
     }
   }
   

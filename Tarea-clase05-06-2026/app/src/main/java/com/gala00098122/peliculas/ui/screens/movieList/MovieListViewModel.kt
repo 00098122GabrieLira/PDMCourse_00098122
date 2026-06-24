@@ -36,7 +36,7 @@ class MovieListViewModel : ViewModel() {
       
       movieRepository.getMovies()
         .onSuccess { movies ->
-          _movies.value = movies
+          _movies.value = movies.sortedBy { it.title }
           
         }
         .onFailure { error ->
@@ -55,7 +55,7 @@ class MovieListViewModel : ViewModel() {
       
       movieRepository.getMovies()
         .onSuccess { movies ->
-          _movies.value = movies
+          _movies.value = movies.sortedBy { it.title }
           
         }
         .onFailure { error ->
