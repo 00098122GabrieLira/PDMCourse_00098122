@@ -39,23 +39,22 @@ import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieVi
 fun UpComingScreen(
   navigateToVersions: (Int) -> Unit,
   navigateBack: () -> Unit,
-  upComingViewModel: UpComingViewModel = viewModel(),
+  upComingViewModel: UpComingViewModel = viewModel(factory = UpComingViewModel.provideFactory()),
   favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
   val movies by upComingViewModel.movies.collectAsState()
-  val loading by upComingViewModel.loading.collectAsState()
+  val isRefreshing by upComingViewModel.isRefreshing.collectAsState()
   val error by upComingViewModel.error.collectAsState()
-  val refresh by upComingViewModel.refresh.collectAsState()
   val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   
-  if (loading) {
+  if (movies.isEmpty() && isRefreshing) {
     AppScaffold(title = "Cargando...") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
     }
     return
   }
   
-  if (error != null) {
+  if (movies.isEmpty() && error != null) {
     AppScaffold(title = "Proximamente") { padding ->
       Column(
         modifier = Modifier
@@ -79,7 +78,7 @@ fun UpComingScreen(
           textAlign = TextAlign.Center,
         )
         Button(
-          onClick = { upComingViewModel.loadMovies() },
+          onClick = { upComingViewModel.refresh() },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -106,8 +105,8 @@ fun UpComingScreen(
     }
   ) { padding ->
     PullToRefreshBox(
-      isRefreshing = refresh,
-      onRefresh = { upComingViewModel.refreshMovies() },
+      isRefreshing = isRefreshing,
+      onRefresh = { upComingViewModel.refresh() },
       modifier = Modifier.fillMaxSize()
     ) {
       LazyColumn(

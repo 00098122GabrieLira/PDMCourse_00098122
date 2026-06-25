@@ -1,42 +1,54 @@
 package com.gala00098122.peliculas.ui.screens.movieDetailScreenV2
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.gala00098122.peliculas.data.repositories.movieRepository.MovieApiRepository
-import com.gala00098122.peliculas.data.repositories.movieRepository.MovieRepository
-import kotlinx.coroutines.flow.MutableStateFlow
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.gala00098122.peliculas.PeliculasApplication
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import com.gala00098122.peliculas.data.model.Movie
+import com.gala00098122.peliculas.data.repositories.offlineMovies.popularMoviesRepository.PopularMovieOfflineRepository
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 
-class MovieDetailViewModelV2 : ViewModel() {
+class MovieDetailViewModelV2(
+  private val popularMovieRepository: PopularMovieOfflineRepository,
+  private val movieId: Int
+) : ViewModel() {
   
-  private val movieRepository: MovieRepository = MovieApiRepository()
+  val movie: StateFlow<Movie?> = popularMovieRepository.getPopularMovieById(movieId)
+    .stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5_000),
+      initialValue = null
+    )
   
-  private val _movie = MutableStateFlow<Movie?>(null)
-  val movie: StateFlow<Movie?> = _movie.asStateFlow()
+  init {
+    refresh()
+  }
   
-  private val _isLoading = MutableStateFlow(false)
-  val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
-  
-  private val _error = MutableStateFlow<String?>(null)
-  val error: StateFlow<String?> = _error.asStateFlow()
-  
-  fun loadMovie(movieId: Int) {
+  fun refresh() {
     viewModelScope.launch {
-      _isLoading.value = true
-      _error.value = null
-      
-      movieRepository.getMovieById(movieId)
-        .onSuccess { movie ->
-          _movie.value = movie
-        }
-        .onFailure { error ->
-          _error.value = "Pelicula no encontrada"
-        }
-      
-      _isLoading.value = false
+      try {
+        popularMovieRepository.refreshPopularMovieById(movieId)
+      } catch (e: Exception) {
+        e.printStackTrace()
+      }
     }
   }
+  
+  companion object {
+    fun provideFactory(movieId: Int) = viewModelFactory {
+      initializer {
+        val app = this[APPLICATION_KEY] as PeliculasApplication
+        MovieDetailViewModelV2(
+          popularMovieRepository = app.appProvider.providePopularMovieRepository(),
+          movieId = movieId
+        )
+      }
+    }
+  }
+  
 }

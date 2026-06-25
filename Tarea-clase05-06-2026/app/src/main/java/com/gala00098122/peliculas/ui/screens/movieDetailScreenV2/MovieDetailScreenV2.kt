@@ -26,10 +26,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.foundation.border
-import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -42,7 +39,6 @@ import androidx.compose.material3.Text
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
@@ -83,19 +79,17 @@ private val genreNames = mapOf(
 fun MovieDetailScreenV2(
   movieId: Int,
   navigateBack: () -> Unit,
-  movieDetailViewModelV2: MovieDetailViewModelV2 = viewModel(),
+  movieDetailViewModelV2: MovieDetailViewModelV2 = viewModel(
+    key = movieId.toString(),
+    factory = MovieDetailViewModelV2.provideFactory(movieId)
+  ),
   favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
+  
   val movie by movieDetailViewModelV2.movie.collectAsState()
-  val isLoading by movieDetailViewModelV2.isLoading.collectAsState()
-  val error by movieDetailViewModelV2.error.collectAsState()
   val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   val snackbarHostState = remember { SnackbarHostState() }
   val scope = rememberCoroutineScope()
-  
-  LaunchedEffect(movieId) {
-    movieDetailViewModelV2.loadMovie(movieId)
-  }
   
   AppScaffold(
     title = movie?.title ?: "Detalle",
@@ -121,7 +115,7 @@ fun MovieDetailScreenV2(
     }
   ) { padding ->
     when {
-      isLoading -> {
+      movie == null -> {
         Box(
           modifier = Modifier
             .fillMaxSize()
@@ -129,42 +123,6 @@ fun MovieDetailScreenV2(
           contentAlignment = Alignment.Center
         ) {
           CircularProgressIndicator()
-        }
-      }
-      
-      error != null -> {
-        Column(
-          modifier = Modifier
-            .fillMaxSize()
-            .padding(padding)
-            .padding(16.dp),
-          horizontalAlignment = Alignment.CenterHorizontally,
-          verticalArrangement = Arrangement.spacedBy(
-            12.dp,
-            alignment = Alignment.CenterVertically
-          )
-        ) {
-          Icon(
-            imageVector = Icons.Default.ErrorOutline,
-            contentDescription = "Error",
-            tint = MaterialTheme.colorScheme.primary,
-            modifier = Modifier.size(72.dp)
-          )
-          Text(
-            text = "$error",
-            textAlign = TextAlign.Center,
-          )
-          Button(
-            onClick = { movieDetailViewModelV2.loadMovie(movieId) },
-            colors = ButtonDefaults.buttonColors(
-              containerColor = MaterialTheme.colorScheme.primary,
-              contentColor = MaterialTheme.colorScheme.onPrimary
-            )
-          ) {
-            Text(
-              text = "Reintentar"
-            )
-          }
         }
       }
       

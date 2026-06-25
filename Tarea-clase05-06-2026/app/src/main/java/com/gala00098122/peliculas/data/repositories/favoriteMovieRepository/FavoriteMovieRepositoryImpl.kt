@@ -1,13 +1,13 @@
 package com.gala00098122.peliculas.data.repositories.favoriteMovieRepository
 
-import com.gala00098122.peliculas.data.database.dao.MovieDAO
-import com.gala00098122.peliculas.data.database.entities.toEntity
+import com.gala00098122.peliculas.data.database.dao.FavoriteMovieDAO
+import com.gala00098122.peliculas.data.database.entities.toFavoriteEntity
 import com.gala00098122.peliculas.data.database.entities.toModel
 import com.gala00098122.peliculas.data.model.Movie
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-class FavoriteMovieRepositoryImpl(private val favoriteMovieDAO: MovieDAO) :
+class FavoriteMovieRepositoryImpl(private val favoriteMovieDAO: FavoriteMovieDAO) :
   FavoriteMovieRepository {
   
   override fun getFavoriteMovies(): Flow<List<Movie>> {
@@ -17,11 +17,11 @@ class FavoriteMovieRepositoryImpl(private val favoriteMovieDAO: MovieDAO) :
   }
   
   override suspend fun addFavoriteMovie(favoriteMovie: Movie) {
-    return favoriteMovieDAO.insertMovie(favoriteMovie.toEntity())
+    return favoriteMovieDAO.insertMovie(favoriteMovie.toFavoriteEntity())
   }
   
   override suspend fun deleteFavoriteMovie(favoriteMovie: Movie) {
-    return favoriteMovieDAO.deleteMovie(favoriteMovie.toEntity())
+    return favoriteMovieDAO.deleteMovie(favoriteMovie.toFavoriteEntity())
   }
   
   override suspend fun clearFavoriteMovies() {

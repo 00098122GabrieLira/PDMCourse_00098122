@@ -6,20 +6,32 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverter
 import androidx.room.TypeConverters
-import com.gala00098122.peliculas.data.database.dao.MovieDAO
+import com.gala00098122.peliculas.data.database.dao.FavoriteMovieDAO
+import com.gala00098122.peliculas.data.database.dao.PopularMovieDAO
+import com.gala00098122.peliculas.data.database.dao.UpComingMovieDAO
 import com.gala00098122.peliculas.data.database.entities.FavoriteMovieEntity
+import com.gala00098122.peliculas.data.database.entities.PopularMovieEntity
+import com.gala00098122.peliculas.data.database.entities.UpComingMovieEntity
 import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
 
 @Database(
-  entities = [FavoriteMovieEntity::class],
-  version = 1,
+  entities = [
+    FavoriteMovieEntity::class,
+    PopularMovieEntity::class,
+    UpComingMovieEntity::class
+  ],
+  version = 2,
   exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
   
-  abstract fun favoriteMovieDAO(): MovieDAO
+  abstract fun favoriteMovieDAO(): FavoriteMovieDAO
+  
+  abstract fun popularMovieDAO(): PopularMovieDAO
+  
+  abstract fun upComingMovieDAO(): UpComingMovieDAO
   
   companion object {
     @Volatile

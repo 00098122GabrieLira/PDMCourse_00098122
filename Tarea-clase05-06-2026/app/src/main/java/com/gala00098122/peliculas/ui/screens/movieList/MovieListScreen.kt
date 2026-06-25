@@ -43,24 +43,23 @@ fun MovieListScreen(
   navigateToUpComing: () -> Unit,
   navigateToSearch: () -> Unit,
   navigateToFavorites: () -> Unit,
-  movieListViewModel: MovieListViewModel = viewModel(),
+  movieListViewModel: MovieListViewModel = viewModel(factory = MovieListViewModel .provideFactory()),
   favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
   
   val movies by movieListViewModel.movies.collectAsState()
-  val loading by movieListViewModel.loading.collectAsState()
+  val isRefreshing by movieListViewModel.isRefreshing.collectAsState()
   val error by movieListViewModel.error.collectAsState()
-  val refresh by movieListViewModel.refresh.collectAsState()
   val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   
-  if (loading) {
+  if (movies.isEmpty() && isRefreshing) {
     AppScaffold(title = "Cargando...") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
     }
     return
   }
   
-  if (error != null) {
+  if (movies.isEmpty() && error != null) {
     AppScaffold(title = "Peliculas") { padding ->
       Column(
         modifier = Modifier
@@ -84,7 +83,7 @@ fun MovieListScreen(
           textAlign = TextAlign.Center,
         )
         Button(
-          onClick = { movieListViewModel.loadMovies() },
+          onClick = { movieListViewModel.refresh() },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -126,8 +125,8 @@ fun MovieListScreen(
     }
   ) { padding ->
     PullToRefreshBox(
-      isRefreshing = refresh,
-      onRefresh = { movieListViewModel.refreshMovies() },
+      isRefreshing = isRefreshing,
+      onRefresh = { movieListViewModel.refresh() },
       modifier = Modifier.fillMaxSize()
     ) {
       LazyColumn(

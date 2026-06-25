@@ -3,10 +3,9 @@ package com.gala00098122.peliculas.data.database.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.gala00098122.peliculas.data.model.Movie
-import kotlin.Int
 
-@Entity(tableName = "favorite_movie")
-data class FavoriteMovieEntity(
+@Entity(tableName = "upComing_movie")
+data class UpComingMovieEntity(
   @PrimaryKey(autoGenerate = false)
   val id: Int,
   val title: String,
@@ -25,8 +24,8 @@ data class FavoriteMovieEntity(
   val posterUrl: String
 )
 
-fun Movie.toFavoriteEntity(): FavoriteMovieEntity {
-  return FavoriteMovieEntity(
+fun Movie.toUpComingEntity(): UpComingMovieEntity {
+  return UpComingMovieEntity(
     id = id,
     title = title,
     originalTitle = originalTitle,
@@ -45,7 +44,7 @@ fun Movie.toFavoriteEntity(): FavoriteMovieEntity {
   )
 }
 
-fun FavoriteMovieEntity.toModel(): Movie{
+fun UpComingMovieEntity.toModel(): Movie{
   return Movie(
     id = id,
     title = title,

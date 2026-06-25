@@ -9,7 +9,7 @@ import com.gala00098122.peliculas.data.database.entities.FavoriteMovieEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
-interface MovieDAO {
+interface FavoriteMovieDAO {
   @Query("SELECT * FROM favorite_movie ORDER BY title COLLATE NOCASE ASC")
   fun getFavoriteMovies(): Flow<List<FavoriteMovieEntity>>
   

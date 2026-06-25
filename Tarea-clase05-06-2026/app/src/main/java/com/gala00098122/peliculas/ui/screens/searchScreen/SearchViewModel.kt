@@ -1,53 +1,59 @@
 package com.gala00098122.peliculas.ui.screens.searchScreen
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider.AndroidViewModelFactory.Companion.APPLICATION_KEY
 import androidx.lifecycle.viewModelScope
-import com.gala00098122.peliculas.data.repositories.movieRepository.MovieApiRepository
-import com.gala00098122.peliculas.data.repositories.movieRepository.MovieRepository
+import androidx.lifecycle.viewmodel.initializer
+import androidx.lifecycle.viewmodel.viewModelFactory
+import com.gala00098122.peliculas.PeliculasApplication
 import com.gala00098122.peliculas.data.model.Movie
+import com.gala00098122.peliculas.data.repositories.offlineMovies.popularMoviesRepository.PopularMovieOfflineRepository
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
-class SearchViewModel : ViewModel() {
+class SearchViewModel(private val popularMovieRepository: PopularMovieOfflineRepository) :
+  ViewModel() {
   
-  private val movieRepository: MovieRepository = MovieApiRepository()
+  val movies: StateFlow<List<Movie>> = popularMovieRepository.getPopularMovies()
+    .stateIn(
+      scope = viewModelScope,
+      started = SharingStarted.WhileSubscribed(5_000),
+      initialValue = emptyList()
+    )
   
-  private val _movies = MutableStateFlow<List<Movie>>(emptyList())
-  val movies = _movies.asStateFlow()
+  private val _isRefreshing = MutableStateFlow(false)
+  val isRefreshing: StateFlow<Boolean> = _isRefreshing.asStateFlow()
+  
+  private val _error = MutableStateFlow<String?>(null)
+  val error: StateFlow<String?> = _error.asStateFlow()
   
   private val _searchQuery = MutableStateFlow("")
   val searchQuery = _searchQuery.asStateFlow()
   
   private val _searchResults = MutableStateFlow<List<Movie>>(emptyList())
   val searchResults = _searchResults.asStateFlow()
-  private val _loading = MutableStateFlow<Boolean>(false)
-  val loading = _loading.asStateFlow()
-  
-  private val _error = MutableStateFlow<String?>(null)
-  val error = _error.asStateFlow()
   
   init {
-    loadMovies()
+    refresh()
   }
   
-  fun loadMovies() {
+  fun refresh() {
     viewModelScope.launch {
-      
       _error.value = null
-      _loading.value = true
+      _isRefreshing.value = true
       
-      movieRepository.getMovies()
-        .onSuccess { movies ->
-          _movies.value = movies
-          _searchResults.value = emptyList()
+      try {
+        popularMovieRepository.refreshPopular()
+      } catch (_: Exception) {
+        if (movies.value.isEmpty()) {
+          _error.value = "Sin conexión y sin datos en caché"
         }
-        .onFailure { error ->
-          _error.value =
-            "Ocurrió un error al cargar las películas. Por favor, intenta recargar la página."
-          _searchResults.value = emptyList()
-        }
-      _loading.value = false
+      }
+      _isRefreshing.value = false
     }
   }
   
@@ -64,7 +70,7 @@ class SearchViewModel : ViewModel() {
     
     val lowerCaseQuery = query.lowercase()
     
-    val filtered = _movies.value.filter { movie ->
+    val filtered = movies.value.filter { movie ->
       
       val matchesMovieTitle = movie.title.lowercase().contains(lowerCaseQuery)
       
@@ -74,6 +80,15 @@ class SearchViewModel : ViewModel() {
     }
     
     _searchResults.value = filtered
+  }
+  
+  companion object {
+    fun provideFactory() = viewModelFactory {
+      initializer {
+        val app = this[APPLICATION_KEY] as PeliculasApplication
+        SearchViewModel(app.appProvider.providePopularMovieRepository())
+      }
+    }
   }
   
 }

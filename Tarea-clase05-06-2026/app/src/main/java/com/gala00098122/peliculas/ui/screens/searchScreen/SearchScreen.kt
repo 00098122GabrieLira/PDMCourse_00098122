@@ -36,24 +36,25 @@ import com.gala00098122.peliculas.ui.screens.favoriteMovieScreen.FavoriteMovieVi
 fun SearchScreen(
   navigateBack: () -> Unit,
   navigateToVersions: (Int) -> Unit,
-  searchViewModel: SearchViewModel = viewModel(),
+  searchViewModel: SearchViewModel = viewModel(factory = SearchViewModel.provideFactory()),
   favoriteMovieViewModel: FavoriteMovieViewModel = viewModel(factory = FavoriteMovieViewModel.provideFactory())
 ) {
   
+  val movies by searchViewModel.movies.collectAsState()
   val searchResults by searchViewModel.searchResults.collectAsState()
   val searchQuery by searchViewModel.searchQuery.collectAsState()
-  val loading by searchViewModel.loading.collectAsState()
+  val isRefreshing by searchViewModel.isRefreshing.collectAsState()
   val error by searchViewModel.error.collectAsState()
   val favoriteMoviesIds by favoriteMovieViewModel.favoriteMoviesIds.collectAsStateWithLifecycle()
   
-  if (loading) {
+  if (movies.isEmpty() && isRefreshing) {
     AppScaffold(title = "Cargando...") { padding ->
       CircularProgressIndicator(modifier = Modifier.padding(padding))
     }
     return
   }
   
-  if (error != null) {
+  if (movies.isEmpty() && error != null) {
     AppScaffold(title = "Movies") { padding ->
       Column(
         modifier = Modifier
@@ -77,7 +78,7 @@ fun SearchScreen(
           textAlign = TextAlign.Center,
         )
         Button(
-          onClick = { searchViewModel.loadMovies() },
+          onClick = { searchViewModel.refresh() },
           colors = ButtonDefaults.buttonColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -104,7 +105,7 @@ fun SearchScreen(
     }
   ) { padding ->
     when {
-      loading -> {
+      isRefreshing -> {
         CircularProgressIndicator(
           modifier = Modifier.padding(padding)
         )
