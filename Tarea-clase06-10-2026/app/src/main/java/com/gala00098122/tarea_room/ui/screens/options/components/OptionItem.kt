@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.options.components
+package com.gala00098122.tarea_room.ui.screens.options.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -63,7 +63,7 @@ fun OptionItem(
         )
         Spacer(modifier = Modifier.height(4.dp))
         Text(
-          text = "Puntuacion: ${option.votes} /100",
+          text = "Votos: ${option.votes}",
           style = MaterialTheme.typography.bodyMedium
         )
         

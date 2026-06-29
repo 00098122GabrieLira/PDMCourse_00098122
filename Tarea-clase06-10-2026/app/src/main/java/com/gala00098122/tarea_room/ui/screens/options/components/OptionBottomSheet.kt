@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.questions.components
+package com.gala00098122.tarea_room.ui.screens.options.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -24,20 +24,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.gala00098122.tarea_room.data.model.Option
-import com.gala00098122.tarea_room.data.model.Question
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun QuestionBottomSheet(
-  initialQuestion: Question? = null,
-  onSave: (title: String) -> Unit,
+fun OptionBottomSheet(
+  initialOption: Option? = null,
+  onSave: (value: String, imageUrl: String) -> Unit,
   onDismiss: () -> Unit
 ) {
   val sheetState = rememberModalBottomSheetState()
-  var title by rememberSaveable { mutableStateOf(initialQuestion?.title ?: "") }
+  var value by rememberSaveable { mutableStateOf(initialOption?.value ?: "") }
+  var imageUrl by rememberSaveable { mutableStateOf(initialOption?.imageUrl ?: "") }
   
-  val isValid = title.isNotBlank()
-  val isEditing = initialQuestion != null
+  val isValid = value.isNotBlank() && imageUrl.isNotBlank()
+  val isEditing = initialOption != null
   
   ModalBottomSheet(
     sheetState = sheetState,
@@ -51,20 +51,28 @@ fun QuestionBottomSheet(
       verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
       Text(
-        text = if (isEditing) "Editar pregunta" else "Nueva pregunta",
+        text = if (isEditing) "Editar opción" else "Nueva opción",
         style = MaterialTheme.typography.titleMedium,
         fontWeight = FontWeight.Bold
       )
       Text(
-        text = if (isEditing) "Modificar datos" else "Agrega una pregunta para que aparezca en la lista.",
+        text = if (isEditing) "Modifica datos." else "Agrega nombre e imagen para que aparezca en la lista.",
         style = MaterialTheme.typography.bodySmall,
         color = MaterialTheme.colorScheme.onSurfaceVariant
       )
       
       OutlinedTextField(
-        value = title,
-        onValueChange = { title = it },
-        label = { Text("Titulo") },
+        value = value,
+        onValueChange = { value = it },
+        label = { Text("Nombre del lugar") },
+        modifier = Modifier.fillMaxWidth(),
+        singleLine = true
+      )
+      
+      OutlinedTextField(
+        value = imageUrl,
+        onValueChange = { imageUrl = it },
+        label = { Text("URL de la imagen") },
         modifier = Modifier.fillMaxWidth(),
         singleLine = true
       )
@@ -78,7 +86,7 @@ fun QuestionBottomSheet(
         Button(
           onClick = {
             if (isValid) {
-              onSave(title.trim())
+              onSave(value.trim(), imageUrl.trim())
               onDismiss()
             }
           },

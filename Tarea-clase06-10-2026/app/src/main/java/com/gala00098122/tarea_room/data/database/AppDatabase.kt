@@ -11,7 +11,7 @@ import com.gala00098122.tarea_room.data.database.entities.QuestionEntity
 
 @Database(
   entities = [OptionEntity::class, QuestionEntity::class],
-  version = 4,
+  version = 5,
   exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {

@@ -6,7 +6,9 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
+import androidx.room.Upsert
 import com.gala00098122.tarea_room.data.database.entities.OptionEntity
+import com.gala00098122.tarea_room.data.database.entities.QuestionEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -15,13 +17,10 @@ interface OptionDAO {
   @Query("SELECT * FROM options WHERE questionId = :questionId")
   fun getOptionsForQuestion(questionId: Int): Flow<List<OptionEntity>>
   
-  @Insert(onConflict = OnConflictStrategy.REPLACE)
-  suspend fun insertOption(option: OptionEntity)
+  @Upsert
+  suspend fun upsert(option: List<OptionEntity>)
   
-  @Delete
-  suspend fun deleteOption(option: OptionEntity)
-  
-  @Update
-  suspend fun updateOption(option: OptionEntity)
+  @Query("DELETE FROM options WHERE id = :id")
+  suspend fun delete(id: Int)
   
 }

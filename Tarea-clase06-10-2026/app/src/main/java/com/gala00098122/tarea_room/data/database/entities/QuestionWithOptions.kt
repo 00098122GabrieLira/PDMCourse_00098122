@@ -16,7 +16,6 @@ data class QuestionWithOptions(
 fun QuestionWithOptions.toModel(): Question {
   return Question(
     id = question.id,
-    title = question.title,
-    optionCount = options.size,
+    title = question.title
   )
 }

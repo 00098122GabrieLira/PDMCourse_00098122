@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.options
+package com.gala00098122.tarea_room.ui.screens.options
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -7,30 +7,37 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ErrorOutline
 import androidx.compose.material.icons.filled.Inbox
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.gala00098122.tarea_room.data.model.Option
 import com.gala00098122.tarea_room.scaffold.AppScaffold
-import com.gala00098122.tarea_room.screens.options.components.OptionBottomSheet
-import com.gala00098122.tarea_room.screens.options.components.OptionItem
+import com.gala00098122.tarea_room.ui.screens.options.components.OptionBottomSheet
+import com.gala00098122.tarea_room.ui.screens.options.components.OptionItem
 
 @Composable
 fun OptionsScreen(
@@ -42,9 +49,57 @@ fun OptionsScreen(
   )
 ) {
   
-  val options by viewModel.options.collectAsStateWithLifecycle()
+  val options by viewModel.options.collectAsState()
+  val isRefreshing by viewModel.isRefreshing.collectAsState()
+  val error by viewModel.error.collectAsState()
   var showSheet by rememberSaveable { mutableStateOf(false) }
   var editingOption by rememberSaveable { mutableStateOf<Option?>(null) }
+  
+  if (options.isEmpty() && isRefreshing) {
+    AppScaffold(title = "Cargando...") { padding ->
+      CircularProgressIndicator(modifier = Modifier.padding(padding))
+    }
+    return
+  }
+  
+  if (options.isEmpty() && error != null) {
+    AppScaffold(title = "Peliculas") { padding ->
+      Column(
+        modifier = Modifier
+          .fillMaxSize()
+          .padding(padding)
+          .padding(16.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(
+          12.dp,
+          alignment = Alignment.CenterVertically
+        )
+      ) {
+        Icon(
+          imageVector = Icons.Default.ErrorOutline,
+          contentDescription = "Error",
+          tint = MaterialTheme.colorScheme.primary,
+          modifier = Modifier.size(72.dp)
+        )
+        Text(
+          text = "$error",
+          textAlign = TextAlign.Center,
+        )
+        Button(
+          onClick = { viewModel.refresh() },
+          colors = ButtonDefaults.buttonColors(
+            containerColor = MaterialTheme.colorScheme.primary,
+            contentColor = MaterialTheme.colorScheme.onPrimary
+          )
+        ) {
+          Text(
+            text = "Reintentar"
+          )
+        }
+      }
+    }
+    return
+  }
   
   AppScaffold(
     title = "Administrar opciones",
@@ -96,18 +151,24 @@ fun OptionsScreen(
           )
         }
       } else {
-        LazyColumn(
-          modifier = Modifier.fillMaxSize(),
-          contentPadding = PaddingValues(vertical = 4.dp),
-          verticalArrangement = Arrangement.spacedBy(10.dp)
+        PullToRefreshBox(
+          isRefreshing = isRefreshing,
+          onRefresh = { viewModel.refresh() },
+          modifier = Modifier.fillMaxSize()
         ) {
-          items(items = options, key = { it.id }) { local ->
-            OptionItem(
-              option = local,
-              onDelete = { viewModel.deleteOption(local) },
-              onEdit = { editingOption = it }
-            )
-            Spacer(modifier = Modifier.height(4.dp))
+          LazyColumn(
+            modifier = Modifier.fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 4.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+          ) {
+            items(items = options, key = { it.id }) { local ->
+              OptionItem(
+                option = local,
+                onDelete = { viewModel.deleteOption(local) },
+                onEdit = { editingOption = it }
+              )
+              Spacer(modifier = Modifier.height(4.dp))
+            }
           }
         }
       }
@@ -117,8 +178,8 @@ fun OptionsScreen(
   if (showSheet) {
     OptionBottomSheet(
       initialOption = null,
-      onSave = { name, imageUrl, votes ->
-        viewModel.addOption(name, imageUrl, votes)
+      onSave = { value, imageUrl->
+        viewModel.addOption(value, imageUrl)
       },
       onDismiss = { showSheet = false }
     )
@@ -127,12 +188,11 @@ fun OptionsScreen(
   if (editingOption != null) {
     OptionBottomSheet(
       initialOption = editingOption,
-      onSave = { name, imageUrl, votes ->
+      onSave = { name, imageUrl ->
         
         val updatedLocal = editingOption?.copy(
           value = name,
-          imageUrl = imageUrl,
-          votes = votes
+          imageUrl = imageUrl
         )
         
         updatedLocal?.let { viewModel.updateOption(it) }

@@ -8,10 +8,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import com.gala00098122.tarea_room.screens.options.OptionsScreen
+import com.gala00098122.tarea_room.ui.screens.options.OptionsScreen
 import com.gala00098122.tarea_room.navegation.routes.Routes
-import com.gala00098122.tarea_room.screens.home.Menu
-import com.gala00098122.tarea_room.screens.questions.QuestionScreen
+import com.gala00098122.tarea_room.ui.screens.home.Menu
+import com.gala00098122.tarea_room.ui.screens.questions.QuestionScreen
 
 @Composable
 fun RoomNavigation() {

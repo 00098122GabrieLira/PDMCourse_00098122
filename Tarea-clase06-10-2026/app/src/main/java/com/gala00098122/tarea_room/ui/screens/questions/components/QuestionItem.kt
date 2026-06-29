@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.screens.questions.components
+package com.gala00098122.tarea_room.ui.screens.questions.components
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row

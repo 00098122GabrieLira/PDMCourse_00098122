@@ -1,4 +1,4 @@
-package com.gala00098122.tarea_room.data.remote
+package com.gala00098122.tarea_room.data.api
 
 import android.util.Log
 import com.gala00098122.tarea_room.BuildConfig
