@@ -40,6 +40,8 @@ class QuestionsOfflineRepositoryImpl(private val questionDAO: QuestionDAO) :
         setBody(request)
       }.body()
       
+      refresh()
+      
       return Result.success(response.id)
     } catch (e: Exception) {
       return Result.failure(e)
@@ -56,6 +58,8 @@ class QuestionsOfflineRepositoryImpl(private val questionDAO: QuestionDAO) :
         header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
         setBody(request)
       }.body()
+      
+      refresh()
       
       return Result.success(response.id)
     } catch (e: Exception) {

@@ -63,7 +63,7 @@ fun OptionsScreen(
   }
   
   if (options.isEmpty() && error != null) {
-    AppScaffold(title = "Peliculas") { padding ->
+    AppScaffold(title = "Opciones") { padding ->
       Column(
         modifier = Modifier
           .fillMaxSize()
@@ -102,7 +102,7 @@ fun OptionsScreen(
   }
   
   AppScaffold(
-    title = "Administrar opciones",
+    title = "Opciones",
     actions = {
       IconButton(onClick = { showSheet = true }) {
         Icon(

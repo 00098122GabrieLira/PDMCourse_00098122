@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface QuestionDAO {
   
-  @Query("SELECT * FROM questions")
+  @Query("SELECT * FROM questions ORDER BY title COLLATE NOCASE ASC")
   fun getQuestionsWithOptions(): Flow<List<QuestionWithOptions>>
   
   @Upsert

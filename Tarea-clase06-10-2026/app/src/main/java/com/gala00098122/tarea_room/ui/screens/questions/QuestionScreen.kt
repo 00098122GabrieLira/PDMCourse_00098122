@@ -58,7 +58,7 @@ fun QuestionScreen(
   }
   
   if (questions.isEmpty() && error != null) {
-    AppScaffold(title = "Peliculas") { padding ->
+    AppScaffold(title = "Preguntas") { padding ->
       Column(
         modifier = Modifier
           .fillMaxSize()

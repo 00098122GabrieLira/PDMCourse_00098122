@@ -14,7 +14,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface OptionDAO {
   
-  @Query("SELECT * FROM options WHERE questionId = :questionId")
+  @Query("SELECT * FROM options WHERE questionId = :questionId ORDER BY value COLLATE NOCASE ASC")
   fun getOptionsForQuestion(questionId: Int): Flow<List<OptionEntity>>
   
   @Upsert

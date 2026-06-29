@@ -47,6 +47,8 @@ class OptionsOfflineRepositoryImpl(private val optionDAO: OptionDAO) : OptionsOf
         setBody(request)
       }.body()
       
+      refresh(questionId)
+      
       return Result.success(response.id)
     } catch (e: Exception) {
       return Result.failure(e)
@@ -76,6 +78,8 @@ class OptionsOfflineRepositoryImpl(private val optionDAO: OptionDAO) : OptionsOf
         header(HttpHeaders.ContentType, ContentType.Application.Json.toString())
         setBody(request)
       }.body()
+      
+      refresh(response.questionId)
       
       return Result.success(response.id)
     } catch (e: Exception) {
